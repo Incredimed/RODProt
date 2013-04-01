@@ -31,43 +31,63 @@ read_json_table <- function(content, schema){
 	table <- list()
 	
 	#map of IDs to column indices
-	idMap <- numeric()
+	idMap <- numeric(length=length(schema))
+	
+	type <- character(length=length(schema))
 	
 	#setup data.frame
 	for (i in 1:length(schema)){
 		thisSchema <- schema[[i]]
-		
-		type <- switch(thisSchema$type,
-									 "integer" = integer(length=length(data)),
-									 "number" = numeric(length=length(data)),
-									 "string" = character(length=length(data))
-		)
+				
+		if (!is.null(thisSchema$type)){
+			type[i] <- switch(thisSchema$type,
+										 "integer" = "integer",
+										 "number" = "numeric",
+										 "string" = "character"
+			)
+			if (is.null(col)){
+				#non-defined class, use character
+				type[i] <- "character"
+			}
+		} else{
+			type[i] <- "character"
+		}		
 						
+		col <- get(type[i])(length=length(data))
+		
 		thisCol <- list()
-		thisCol[[thisSchema$name]] <- type
+		if (!is.null(thisSchema$label)){
+			thisCol[[thisSchema$label]] <- col
+		} else{
+			thisCol[[thisSchema$id]] <- col
+		}
 				
 		table <- c(table, thisCol)
 		idMap[i] <- thisSchema$id
 	}
-	table <- as.data.frame(table)
+	table <- as.data.frame(table, stringsAsFactors=FALSE)
 	
 	#separate data into named and mixed-array type rows
-	mixed <- data[sapply(data, class) != "list"]
-	named <- data[sapply(data, class) == "list"]
+	namedInd <- sapply(data, class) == "list" & !sapply(data, function(x){is.null(names(x))})
+	mixed <- data[!namedInd]
+	named <- data[namedInd]
 	
 	#process mixed-aray columns which have no names
 	if (length(unique(sapply(mixed, length))) > 1){		
 		stop("All mixed-array rows must have the same number of columns")
 	}
+	
 	mixLen <- length(mixed)
 	mixed <- unlist(mixed)
-	
-	for (i in 1:ncol(table)){
-		table[,i] <- mixed[(0:(mixLen-1))*ncol(table)+i]
-	}	
+	if (mixLen > 0){
+		for (i in 1:ncol(table)){			
+			table[1:mixLen,i] <- get(paste("as",type[i],sep="."))(mixed[(0:(mixLen-1))*ncol(table)+i])			
+		}	
+	}
 	
 	#process named elements
 	#match(,idMap)
+	
 	
 	table
 }
