@@ -1,4 +1,4 @@
-context("read_json_table")
+context("write_json_table")
 
 test_that("characeter data.frame can be written and read", {
   data <- data.frame(a=letters[1:3], 

@@ -25,15 +25,8 @@ write_json_table <- function(data, connection=stdout(), named=FALSE){
                         type=type)
   }
   
-  #hack together JSON manually so we can use the write.table function to handle 
-  # when an element should be quoted. Since we can't have a mixed-type array in R,
-  # there's not a way to blend the types without it getting convered to a list by
-  # toJSON().
-  writeLines('{"fields":', connection, sep="")
-  writeLines(toJSON(schema), connection, sep="")
-  writeLines(',"data":[', connection, sep="")  
-  writeLines("[", connection, sep="")
-  write.table(data[1:(nrow(data)-1),], file=connection, col.names=FALSE, row.names=FALSE, eol="],[", sep=",")
-  write.table(data[nrow(data),], file=connection, col.names=FALSE, row.names=FALSE, eol="]", sep=",")
-  writeLines("]}\n", connection, sep="")
+  #for some reason, getting some leading whitespace that needs to be trimmed
+  dataList <- lapply(apply(data, 1, function(x){list(unname(sub("^\\s+", "", x)))}), "[[", 1)
+    
+  writeLines(toJSON(list(fields=schema, data=dataList)), connection)
 }
