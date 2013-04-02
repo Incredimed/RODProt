@@ -1,0 +1,15 @@
+{"fields":[
+{
+	"id":"A",
+	"label":"Column A",
+	"type":"integer"		
+},{
+	"id":"B",
+	"label":"Column B",
+	"type":"string"		
+}],
+	"data":[
+	[4, "test"],
+	[5, "another"],
+	[6, "final"]
+	]}
