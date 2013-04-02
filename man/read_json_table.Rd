@@ -7,14 +7,16 @@
 \arguments{
   \item{content}{The content to convert. This can either be
   a String of JSON, a local filename, or a URL. You can
-  provide the schema and data in a single message (with the
-  schema as the first JSON element, and the data as the
-  second), or you can use the \code{schema} paramter to
-  specify the schema and provide only the data here.}
+  provide the schema and data in a single message (with
+  keys named \code{fields} and \code{data}, respectively),
+  or you can use the \code{schema} paramter to specify the
+  schema and provide only the data here (with no prefacing
+  \code{data:\{} attribute).}
 
   \item{schema}{Optionally, you can provide a separate
   schema for the message contained in the \code{content}
-  parameter.}
+  parameter. This can be either the JSON itself, a local
+  file reference, or a URL.}
 }
 \description{
   A function to read in a JSON Table Schema
