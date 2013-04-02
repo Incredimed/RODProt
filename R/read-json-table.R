@@ -12,6 +12,10 @@
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 read_json_table <- function(content, schema){	
+	if (missing(content)){
+		content <- list()
+	}
+	
 	if (class(content) == "list"){
 		#assume it's already a parsed JSON file.
 		#TODO: test

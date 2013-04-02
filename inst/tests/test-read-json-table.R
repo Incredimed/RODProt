@@ -331,17 +331,56 @@ test_that("mixed-length data array fails", {
 							 ".*same.*number.*columns.*")
 })
 
-test_that("Schema-less JSON works", {
+test_that("data-less JSON produces empty data.frame", {
+	json <- '{"fields":[
+		{
+			"id":"A",
+	"label":"Column A",
+	"type":"integer"		
+},{
+	"id":"B",
+	"label":"Column B",
+	"type":"string"		
+}],
+	"data":[]}'
+	
+	tab <- read_json_table(json)	
+	expected <- data.frame(Column.A=integer(), 
+												 Column.B=character(), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)
+})
+
+test_that("missing data produces empty data.frame", {
+	schema <- '{"fields":[
+{
+	"id":"A",
+	"label":"Column A",
+	"type":"integer"		
+},{
+	"id":"B",
+	"label":"Column B",
+	"type":"string"		
+}]}'
+	
+	tab <- read_json_table(schema=schema)	
+	expected <- data.frame(Column.A=integer(), 
+												 Column.B=character(), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)
+	})
+
+test_that("Schema-less array JSON works", {
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
+})
+
+test_that("Schema-less list JSON works", {
 	#TODO: 
 	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
 test_that("Invalid types produce explicit warning", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
-})
-
-test_that("data-less JSON produces empty data.frame", {
 	#TODO: 
 	expect_equal(0, 1, info="Test not yet implemented.")
 })
