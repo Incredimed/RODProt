@@ -166,11 +166,12 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 	#process named elements
 	#Thanks to Josh O'Brien and the others in the discussion at:
 	# http://stackoverflow.com/questions/15753091/
-	if (length(named) > 0){
-		nonSchemad <- !(sapply(named, names) %in% idMap)
+	if (length(named) > 0){		
+		nonSchemad <- !sapply(lapply(named, names), function(x){all(x %in% idMap)})
+		
 		if (sum(nonSchemad) > 0){
-			warning(paste("The following named elements were not specified in the schema and will",
-							"be ignored: ", (paste(sapply(named, names)[nonSchemad],collapse=",")), sep=""))
+			warning(paste("One of the following named elements were not specified in the schema and will",
+							"be ignored: ", (paste(unlist(lapply(named, names)[nonSchemad]),collapse=",")), sep=""))
 		}
 		
 		mat <- t(vapply(named, 

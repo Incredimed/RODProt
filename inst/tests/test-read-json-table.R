@@ -414,6 +414,30 @@ test_that("Schema-less list JSON works", {
 	#classes will not be guaranteed to be right with no schema.
 	expect_equal(as.character(tab$A), as.character(expected$A))
 	expect_equal(as.character(tab$B), as.character(expected$B))	
+	
+	
+	dataJSON <- '{
+	"data":[
+{"A": 4, "B": "test"},
+{"C": 5, "B": "another"},
+{"A": 6}
+	]}'
+	
+	tab <- read_json_table(dataJSON)	
+	expected <- data.frame(A=c(4,NA,6), 
+												 B=c("test", "another", NA), 
+												 C=c(NA, 5, NA),
+												 stringsAsFactors=FALSE)
+	
+	#order of columns is (theoretically) non-deterministic. Just check content, not identical.
+	expect_true(all(colnames(tab) %in% c("A", "B", "C")))
+	expect_equal(nrow(tab), 3)
+	expect_equal(ncol(tab), 3)
+	
+	#classes will not be guaranteed to be right with no schema.
+	expect_equal(as.character(tab$A), as.character(expected$A))
+	expect_equal(as.character(tab$B), as.character(expected$B))	
+	expect_equal(as.character(tab$C), as.character(expected$C))	
 })
 
 test_that("Invalid types produces error", {
