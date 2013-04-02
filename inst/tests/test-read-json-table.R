@@ -371,13 +371,49 @@ test_that("missing data produces empty data.frame", {
 	})
 
 test_that("Schema-less array JSON works", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+	dataJSON <- '{
+	"data":[
+[4, "test"],
+[5, "another"],
+[6, "final"]
+	]}'
+	
+	tab <- read_json_table(dataJSON)	
+	expected <- data.frame(C1=4:6, 
+												 C2=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	
+	#order of columns is (theoretically) non-deterministic. Just check content, not identical.
+	expect_true(all(colnames(tab) %in% c("C1", "C2")))
+	expect_equal(nrow(tab), 3)
+	expect_equal(ncol(tab), 2)
+	
+	#classes will not be guaranteed to be right with no schema.
+	expect_equal(as.character(tab$C1), as.character(expected$C1))
+	expect_equal(as.character(tab$C2), as.character(expected$C2))
 })
 
 test_that("Schema-less list JSON works", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+	dataJSON <- '{
+	"data":[
+{"A": 4, "B": "test"},
+{"A": 5, "B": "another"},
+{"A": 6, "B": "final"}
+	]}'
+	
+	tab <- read_json_table(dataJSON)	
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	
+	#order of columns is (theoretically) non-deterministic. Just check content, not identical.
+	expect_true(all(colnames(tab) %in% c("A", "B")))
+	expect_equal(nrow(tab), 3)
+	expect_equal(ncol(tab), 2)
+	
+	#classes will not be guaranteed to be right with no schema.
+	expect_equal(as.character(tab$A), as.character(expected$A))
+	expect_equal(as.character(tab$B), as.character(expected$B))	
 })
 
 test_that("Invalid types produces error", {
@@ -424,6 +460,11 @@ test_that("Overlook invalid type produces no issues", {
 	})
 
 test_that("remote URL works", {
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
+})
+
+test_that("separate remote URL works", {
 	#TODO: 
 	expect_equal(0, 1, info="Test not yet implemented.")
 })

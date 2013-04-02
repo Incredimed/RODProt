@@ -73,38 +73,59 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 	#to ultimately be converted into the data.frame to return
 	table <- list()
 	
-	#map of IDs to column indices
-	idMap <- numeric(length=length(schema))
+	if (!is.null(schema)){
+		#map of IDs to column indices
+		idMap <- numeric(length=length(schema))	
+	} else{
+		#calculate IDs dynamically.
+		nullNames <- unlist(lapply(data, function(x){is.null(names(x))}))
+		if (sum(nullNames) > 0 && !all(nullNames)){
+			stop("You can't mix the mixed-array format with the named list format in a schema-less JSON table. We don't know which column is which!")
+		}
+		if (!all(nullNames)){
+			idMap <- unique(unlist(lapply(data, names)))
+		} else{
+			idMap <- paste("C", 1:length(data[[1]]), sep="")
+		}
+	}
 	
-	type <- character(length=length(schema))
+	type <- character(length=length(idMap))
 	
 	#setup data.frame
-	for (i in 1:length(schema)){
-		thisSchema <- schema[[i]]
+	for (i in 1:length(idMap)){
+		if(!is.null(schema)){
+			#if we have a schema, parse it.
+			thisSchema <- schema[[i]]
 				
-		if (!is.null(thisSchema$type)){
-			thisType <- switch(thisSchema$type,
- 							 				   "integer" = "integer",
-											   "number" = "numeric",
-											   "string" = "character",
-												 "boolean" = "logical"
-			)			
-			if (is.null(thisType)){
-				if (!overlook.types){
-					#non-defined class, stop
-					stop(paste("The class specified ('", thisSchema$type, "') is not supported. Set ",
-										 "'overlook.types' to TRUE to ignore this error.", sep=""))
+			if (!is.null(thisSchema$type)){
+				thisType <- switch(thisSchema$type,
+	 							 				   "integer" = "integer",
+												   "number" = "numeric",
+												   "string" = "character",
+													 "boolean" = "logical"
+				)			
+				if (is.null(thisType)){
+					if (!overlook.types){
+						#non-defined class, stop
+						stop(paste("The class specified ('", thisSchema$type, "') is not supported. Set ",
+											 "'overlook.types' to TRUE to ignore this error.", sep=""))
+					} else{
+						type[i] <- "character"
+					}
+					
 				} else{
-					type[i] <- "character"
+					type[i] <- thisType
 				}
-				
 			} else{
-				type[i] <- thisType
-			}
-		} else{
+				type[i] <- "character"
+			}		
+		}
+		else{
+			#no schema was provided, need to build ourselves from the idMap
+			thisSchema <- list(id=idMap[i])
 			type[i] <- "character"
-		}		
-						
+		}
+		
 		col <- get(type[i])(length=length(data))
 		
 		thisCol <- list()
@@ -117,6 +138,7 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		table <- c(table, thisCol)
 		idMap[i] <- thisSchema$id
 	}
+	
 	table <- as.data.frame(table, stringsAsFactors=FALSE)
 	
 	#separate data into named and mixed-array type rows
@@ -131,7 +153,7 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		if (length(colCounts) > 1){		
 			stop("All mixed-array rows must have the same number of columns")
 		}		
-		if (colCounts != length(schema)){
+		if (colCounts != length(idMap)){
 			stop("Number of columns in data doesn't match the number of columns specified in the schema.")
 		}
 				
