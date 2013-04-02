@@ -380,10 +380,48 @@ test_that("Schema-less list JSON works", {
 	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
-test_that("Invalid types produce explicit warning", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+test_that("Invalid types produces error", {
+	json <- '{"fields":[
+		{
+			"id":"A",
+	"type":"foobar"		
+},{
+	"id":"B",
+	"type":"string"		
+}],
+	"data":[
+{"A": 4, "B": "test"},
+{"A": 5, "B": "another"},
+{"A": 6, "B": "final"}
+	]}'
+	
+	expect_error(read_json_table(json),
+							 "foobar.*not supported.*overlook\\.types")
+	
 })
+
+
+test_that("Overlook invalid type produces no issues", {
+	json <- '{"fields":[
+{
+	"id":"A",
+	"type":"foobar"		
+},{
+	"id":"B",
+	"type":"string"		
+}],
+	"data":[
+{"A": 4, "B": "test"},
+{"A": 5, "B": "another"},
+{"A": 6, "B": "final"}
+	]}'
+	
+	tab <- read_json_table(json, overlook.types=TRUE)
+	expected <- data.frame(A=as.character(4:6),
+												 B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)	
+	})
 
 test_that("remote URL works", {
 	#TODO: 

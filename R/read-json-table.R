@@ -8,10 +8,14 @@
 #' @param schema Optionally, you can provide a separate schema for the 
 #' message contained in the \code{content} parameter. This can be either the JSON
 #' itself, a local file reference, or a URL.
+#' @param overlook.types If TRUE, any unrecognized or non-supported type will 
+#' just be treated as a character vector. Otherwise, the function will terminate
+#' upon encountering a non-supported type. The currently supported types are: 
+#' (\code{boolean}, \code{string}, \code{integer}, and \code{number}).
 #' @importFrom rjson fromJSON
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-read_json_table <- function(content, schema){	
+read_json_table <- function(content, schema, overlook.types=FALSE){	
 	if (missing(content)){
 		content <- list()
 	}
@@ -79,14 +83,23 @@ read_json_table <- function(content, schema){
 		thisSchema <- schema[[i]]
 				
 		if (!is.null(thisSchema$type)){
-			type[i] <- switch(thisSchema$type,
-										 "integer" = "integer",
-										 "number" = "numeric",
-										 "string" = "character"
-			)
-			if (is.null(col)){
-				#non-defined class, use character
-				type[i] <- "character"
+			thisType <- switch(thisSchema$type,
+ 							 				   "integer" = "integer",
+											   "number" = "numeric",
+											   "string" = "character",
+												 "boolean" = "logical"
+			)			
+			if (is.null(thisType)){
+				if (!overlook.types){
+					#non-defined class, stop
+					stop(paste("The class specified ('", thisSchema$type, "') is not supported. Set ",
+										 "'overlook.types' to TRUE to ignore this error.", sep=""))
+				} else{
+					type[i] <- "character"
+				}
+				
+			} else{
+				type[i] <- thisType
 			}
 		} else{
 			type[i] <- "character"
