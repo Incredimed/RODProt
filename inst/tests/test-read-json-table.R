@@ -484,11 +484,18 @@ test_that("Overlook invalid type produces no issues", {
 	})
 
 test_that("remote URL works", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+  tab <- read_json_table("http://raw.github.com/QBRC/RODProt/63cd96f91ccdae6e8358393211ea3d88870c8eb0/data/mixed.json")
+  expected <- data.frame(Column.A=4:6,
+                         Column.B=c("test", "another", "final"), 
+                         stringsAsFactors=FALSE)
+  expect_identical(tab, expected)
 })
 
 test_that("separate remote URL works", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+  tab <- read_json_table(content="http://raw.github.com/QBRC/RODProt/cd95fe955ae3e97cab528540874361b08ebc2aa9/data/data.json",
+                         schema="http://raw.github.com/QBRC/RODProt/cd95fe955ae3e97cab528540874361b08ebc2aa9/data/schema.json")
+  expected <- data.frame(Column.A=4:6,
+                         Column.B=c("test", "another", "final"), 
+                         stringsAsFactors=FALSE)
+  expect_identical(tab, expected)
 })
