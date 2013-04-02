@@ -1,8 +1,33 @@
 context("read_json_table")
 
 test_that("local file JSON works", {
-	#TODO: 
-	expect_equal(0, 1, info="Test not yet implemented.")
+	fl <- tempfile()
+		
+	json <- "{\"fields\":[
+			{
+				\"id\":\"A\",
+		\"type\":\"integer\"		
+	},{
+		\"id\":\"B\",
+		\"type\":\"string\"		
+	}],
+		\"data\":[
+	{\"A\": 4, \"B\": \"test\"},
+	{\"A\": 5, \"B\": \"another\"},
+	{\"A\": 6, \"B\": \"final\"}
+		]}"
+	
+	fileCon <- file(fl)
+	writeLines(json, con=fileCon)
+	close(fileCon)	
+	
+	tab <- read_json_table(fl)	
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)	
+	
+	unlink(fl)
 })
 
 test_that("label-less JSON works", {
@@ -121,7 +146,7 @@ test_that("Invalid types produce explicit warning", {
 	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
-test_that("data-less JSON poduces empty data.frame", {
+test_that("data-less JSON produces empty data.frame", {
 	#TODO: 
 	expect_equal(0, 1, info="Test not yet implemented.")
 })
