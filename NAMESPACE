@@ -1,2 +1,3 @@
 export(read_json_table)
+export(write_json_table)
 importFrom(rjson,fromJSON)

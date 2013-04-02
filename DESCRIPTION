@@ -13,3 +13,4 @@ Imports:
 License: MIT
 Collate:
     'read-json-table.R'
+    'write-json-table.R'
