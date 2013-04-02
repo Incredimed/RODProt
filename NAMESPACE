@@ -1,1 +1,2 @@
 export(read_json_table)
+importFrom(rjson,fromJSON)

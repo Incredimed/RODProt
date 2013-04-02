@@ -1,7 +1,8 @@
 context("read_json_table")
 
 test_that("local file JSON works", {
-	#TODO
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
 test_that("label-less JSON works", {
@@ -23,10 +24,7 @@ test_that("label-less JSON works", {
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
-	expect_identical(tab, expected)
-	
-	#check classes
-	
+	expect_identical(tab, expected)	
 })
 
 test_that("labeled JSON works", {
@@ -90,45 +88,45 @@ test_that("combined array and named JSON works", {
 			\"type\":\"string\"		
 		}],
 		\"data\":[
-			{\"A\":4, \"B\":\"test\"],
-			[\"B\":\"another\", \"A\":5],
+			{\"A\":4, \"B\":\"test\"},
+			{\"B\":\"another\", \"A\":5},
 			[6, \"final\"]
 		]}"
 	
 	tab <- read_json_table(json)	
-	expect_equal(nrow(tab), 3)
-	expect_equal(ncol(tab), 2)
+	expected <- data.frame(Column.A=4:6, 
+												 Column.B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)
+	
 })
 
 test_that("separate schema works", {
-	json <- "{\"fields\":[
-		{
-			\"id\":\"A\",
-			\"label\":\"Column A\",
-			\"type\":\"integer\"		
-		},{
-			\"id\":\"B\",
-			\"label\":\"Column B\",
-			\"type\":\"string\"		
-		}],
-		\"data\":{
-			
-
-		}"
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
 test_that("invalid JSON fails", {
-	
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
-test_that("Schema-less JSON fails", {
-	
+test_that("Schema-less JSON works", {
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
-test_that("data-less JSON works", {
-	
+test_that("Invalid types produce explicit warning", {
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
+})
+
+test_that("data-less JSON poduces empty data.frame", {
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })
 
 test_that("remote URL works", {
-	#TODO
+	#TODO: 
+	expect_equal(0, 1, info="Test not yet implemented.")
 })

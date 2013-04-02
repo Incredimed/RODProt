@@ -5,6 +5,7 @@
 #' single message (with the schema as the first JSON element, and the data
 #' as the second), or you can use the \code{schema} paramter to specify the
 #' schema and provide only the data here.
+#' @importFrom rjson fromJSON
 #' @param schema Optionally, you can provide a separate schema for the 
 #' message contained in the \code{content} parameter.
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
@@ -81,13 +82,24 @@ read_json_table <- function(content, schema){
 	mixed <- unlist(mixed)
 	if (mixLen > 0){
 		for (i in 1:ncol(table)){			
-			table[1:mixLen,i] <- get(paste("as",type[i],sep="."))(mixed[(0:(mixLen-1))*ncol(table)+i])			
+			table[!namedInd,i] <- get(paste("as",type[i],sep="."))(mixed[(0:(mixLen-1))*ncol(table)+i])			
 		}	
 	}
 	
 	#process named elements
-	#match(,idMap)
-	
+	#Thanks to Josh O'Brien and the others in the discussion at:
+	# http://stackoverflow.com/questions/15753091/
+	if (length(named) > 0){
+		mat <- t(vapply(named, 
+									FUN = function(X) as.character(unlist(X)[idMap]), 
+									FUN.VALUE = character(length(idMap))))	
+		mat <- as.data.frame(mat, stringsAsFactors=FALSE)
+		for (i in 1:ncol(mat)){
+			mat[,i] <- get(paste("as", type[i], sep="."))(mat[,i])
+		}
+		
+		table[namedInd,] <- mat
+	}
 	
 	table
 }
