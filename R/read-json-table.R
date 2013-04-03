@@ -13,6 +13,8 @@
 #' upon encountering a non-supported type. The currently supported types are: 
 #' (\code{boolean}, \code{string}, \code{integer}, and \code{number}).
 #' @importFrom rjson fromJSON
+#' @importFrom httr GET
+#' @importFrom httr content
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 read_json_table <- function(content, schema, overlook.types=FALSE){	
@@ -25,11 +27,12 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		#TODO: test
 		json <- content
 	}	else{
-		if (file.exists(content) || 
-					tolower(substr(content,0, 4)) == "http"){
+		if (file.exists(content)){					
 			#Assume it's a local file and parse accordingly.
 			json <- fromJSON(file=content)
-		} else{
+		} else if (tolower(substr(content,0, 4)) == "http"){
+		  json <- fromJSON(content(GET(content)))
+    }else{
 			json <- fromJSON(content)
 		}	
 	}
@@ -38,11 +41,12 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		schema <- json$fields
 		data <- json$data
 	} else{		
-		if (file.exists(schema) || 
-					tolower(substr(schema,0, 4)) == "http"){
+		if (file.exists(schema)){
 			#Assume it's a local file and parse accordingly.
 			schema <- fromJSON(file=schema)
-		} else{
+		} else if (tolower(substr(schema,0, 4)) == "http"){
+		  schema <- fromJSON(content(GET(schema)))
+    } else{
 			schema <- fromJSON(schema)
 		}	
 		
