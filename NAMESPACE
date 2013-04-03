@@ -1,6 +1,6 @@
 export(read_json_table)
 export(write_json_table)
+importFrom(httr,content)
+importFrom(httr,GET)
 importFrom(rjson,fromJSON)
 importFrom(rjson,toJSON)
-importFrom(httr,GET)
-importFrom(httr,content)
