@@ -16,14 +16,21 @@ read_data_package <- function(content, base){
 	if (file.exists(content)){
 		#open local file
 		json <- fromJSON(file=content)
+		base <- dirname(content)
 	} else if (tolower(substr(content,0, 4)) == "http"){
 		#download remote file
-		json <- content(GET(content))
+		json <- fromJSON(content(GET(content)))
+		base <- dirname(content)
 	} else{
   	#must be raw JSON
   	json <- fromJSON(content)
+  	if (missing(base)){
+  		warning("You didn't specify a base directory and provided the package content directly, so we won't know how to find any files referenced within this Data Package. Consider setting the 'base' variable or providing a file/URL reference instead of the JSON itself.")
+  		base <- NULL
+  	}  	
   }
   
+	json$base <- base
   class(json) <- c("dataPackage", class(json))
   json
 }
