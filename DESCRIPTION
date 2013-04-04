@@ -2,8 +2,8 @@ Package: RODProt
 Type: Package
 Title: An R Client for Interacting with Data Encoded in one of the 'Open Data
     Protocols' Standards.
-Version: 0.1.1
-Date: 2013-04-01
+Version: 0.1.2
+Date: 2013-04-03
 Author: Jeffrey D. Allen <jeffrey.allen@utsouthwestern.edu>
 Maintainer: Jeffrey D. Allen <jeffrey.allen@utsouthwestern.edu>
 Description: An R Client for Interacting with Data Encoded in one of the 'Open
@@ -15,3 +15,5 @@ License: MIT
 Collate:
     'read-json-table.R'
     'write-json-table.R'
+    'read-data-package.R'
+    'print-data-package.R'

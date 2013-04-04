@@ -1,0 +1,31 @@
+{
+  "name": "sample-data",
+  "title": "Sample Data",
+  "sources": [{
+    "name": "World Bank and OECD",
+    "web": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+  }],  
+  "licenses": [{
+    "id": "odc-pddl",
+    "url": "http://opendatacommons.org/licenses/pddl/"
+  }],
+  "files": [
+    {
+      "path": "data.json",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer"		
+          },{
+            "id":"B",
+            "label":"Column B",
+            "type":"string"
+          }
+        ]
+      }
+    }
+  ]
+}
+

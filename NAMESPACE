@@ -1,3 +1,5 @@
+export(print.dataPackage)
+export(read_data_package)
 export(read_json_table)
 export(write_json_table)
 importFrom(httr,content)
