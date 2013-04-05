@@ -10,8 +10,23 @@
     "url": "http://opendatacommons.org/licenses/pddl/"
   }],
   "files": [
-    {
+     {
       "path": "data.json",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer"		
+          },{
+            "id":"B",
+            "label":"Column B",
+            "type":"string"
+          }
+        ]
+      },
+      {
+      "path": "data2.json",
       "schema": {
         "fields":[
           {
