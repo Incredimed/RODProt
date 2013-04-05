@@ -19,7 +19,7 @@
 #' path is extracted using \code{\link{dirname}} and ignored to see if the remainder of the
 #' string matches (with the possible exclusion of a prefacing slash).
 #' }
-#' @param cache Whether or not to cache the file once retrieved. If \code{TRUE}, the 
+#' @param cache Whether or not to cache the file once retrieved. If \code{TRUE}, (default) the 
 #' function will check this Data Package to see if the file has already been cached. If 
 #' it has, it will simply return the file from the cache. If it has not, the function will
 #' retrieve the remote file then save a copy in this package's cache. Note that this will
@@ -32,7 +32,7 @@
 #' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-get_file <- function(dataPkg, file, cache=FALSE){	
+get_file <- function(dataPkg, file, cache=TRUE){	
 	if (cache != TRUE && cache != FALSE && cache!= "flush"){
 		stop("Invalid cache value. Must be TRUE, FALSE, or 'flush'.")
 	}
