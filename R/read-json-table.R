@@ -41,7 +41,9 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		schema <- json$fields
 		data <- json$data
 	} else{		
-		if (file.exists(schema)){
+		if (class(schema) == "list"){
+			#already parsed
+		} else if (file.exists(schema)){
 			#Assume it's a local file and parse accordingly.
 			schema <- fromJSON(file=schema)
 		} else if (tolower(substr(schema,0, 4)) == "http"){

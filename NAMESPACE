@@ -1,3 +1,4 @@
+export(get_file)
 export(print.dataPackage)
 export(read_data_package)
 export(read_json_table)
