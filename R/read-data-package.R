@@ -10,6 +10,7 @@
 #' @importFrom rjson fromJSON
 #' @importFrom httr GET
 #' @importFrom httr content
+#' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 read_data_package <- function(content, base){
@@ -32,5 +33,8 @@ read_data_package <- function(content, base){
   
 	json$base <- base
   class(json) <- c("dataPackage", class(json))
+	
+	json$hash <- digest(json, algo="sha256")
+	
   json
 }

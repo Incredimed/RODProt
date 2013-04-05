@@ -19,9 +19,24 @@
 #' path is extracted using \code{\link{dirname}} and ignored to see if the remainder of the
 #' string matches (with the possible exclusion of a prefacing slash).
 #' }
+#' @param cache Whether or not to cache the file once retrieved. If \code{TRUE}, the 
+#' function will check this Data Package to see if the file has already been cached. If 
+#' it has, it will simply return the file from the cache. If it has not, the function will
+#' retrieve the remote file then save a copy in this package's cache. Note that this will
+#' involve storing an extra copy of the data, doubling memory usage. If \code{FALSE}, the 
+#' function will retrieve the
+#' file remotely, but not store the result in the cache when returning. The third option
+#' is to set cache to \code{"flush"}. When this occurs, the function will retrieve the 
+#' file remotely, ignoring any pre-existing local copy, and store the result in the cache
+#' for future use.
+#' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-get_file <- function(dataPkg, file){	
+get_file <- function(dataPkg, file, cache=FALSE){	
+	if (cache != TRUE && cache != FALSE && cache!= "flush"){
+		stop("Invalid cache value. Must be TRUE, FALSE, or 'flush'.")
+	}
+	
 	if (file %in% names(dataPkg$files)){
 		ind <- which(file == names(dataPkg$files))
 	} else if (file %in% lapply(dataPkg$files, "[[", "id")){
@@ -70,6 +85,15 @@ get_file <- function(dataPkg, file){
 	
 	thisFile <- dataPkg$files[[ind]]
 	
+	if (cache==TRUE && exists(dataPkg$hash, envir=.cacheEnv)){
+		pkgCache <- get(dataPkg$hash, envir=.cacheEnv)		
+		fileCache <- pkgCache[[digest(thisFile, algo="sha256")]]
+		if(!is.null(fileCache)){
+			#requested value from cache and it's available in cache. Serve from cache.
+			return(fileCache)
+		}
+	}
+	
 	#TODO: handle other types like CSV.
 	
 	if (!is.null(thisFile$url)){
@@ -79,12 +103,26 @@ get_file <- function(dataPkg, file){
 			url <- paste(dataPkg$base, thisFile$url, sep="/")
 		}
 		
-		return(read_json_table(url, thisFile$schema))
+		toReturn <- read_json_table(url, thisFile$schema)
 	} else if (!is.null(thisFile$path)){
-		return(read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), thisFile$schema))
+		toReturn <- read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), thisFile$schema)
 	} else{
 		stop("File found, but no path or url field specified")
 	}	
+	
+	if (cache=="TRUE" || tolower(cache) == "flush"){
+		if (exists(dataPkg$hash, envir=.cacheEnv)){
+			pkgCache <- get(dataPkg$hash, envir=.cacheEnv)				
+		} else{
+			pkgCache <- list()
+		}
+				
+		pkgCache[[digest(thisFile, algo="sha256")]] <- toReturn
+		
+		assign(dataPkg$hash, pkgCache, envir=.cacheEnv)
+	}	
+	
+	return(toReturn)
 	
 }
 

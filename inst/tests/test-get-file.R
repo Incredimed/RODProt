@@ -142,3 +142,94 @@ test_that("Trimmed path works", {
 })
 
 
+
+#### Test caching
+
+test_that("No cache when disabled", {	
+	pkg <- read_data_package("../extdata/datapackage.json")
+	#manually set hash to verify in testing
+	pkg$hash <- "testhash"
+	
+	expect_true(!exists("testhash", envir=.cacheEnv))
+ 	
+ 	file <- get_file(pkg, "data.json", cache=FALSE)
+
+	expected <- data.frame(Column.A=4:6, 
+												 Column.B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(file, expected)
+	
+	expect_true(!exists("testhash", envir=.cacheEnv))
+	expect_equal(length(ls(envir=.cacheEnv)),0)
+	
+	flush_cache()
+})
+
+test_that("Cache when enabled", {	
+	pkg <- read_data_package("../extdata/datapackage.json")
+	#manually set hash to verify in testing
+	pkg$hash <- "testhash"
+	
+	expect_true(!exists("testhash", envir=.cacheEnv))
+	
+	file <- get_file(pkg, "data.json", cache=TRUE)
+	
+	expected <- data.frame(Column.A=4:6, 
+												 Column.B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(file, expected)
+	
+	expect_equal(length(ls(envir=.cacheEnv)),1)
+	
+	pkgCache <- get("testhash", envir=.cacheEnv)
+	expect_identical(pkgCache[[1]], file)
+	
+	flush_cache()
+})
+
+
+test_that("Cache flush works", {	
+	pkg <- read_data_package("../extdata/datapackage.json")
+	#manually set hash to verify in testing
+	pkg$hash <- "testhash"
+	
+	#check that cache is currently empty
+	expect_true(!exists("testhash", envir=.cacheEnv))
+	
+	file <- get_file(pkg, "data.json", cache=TRUE)
+	
+	expected <- data.frame(Column.A=4:6, 
+												 Column.B=c("test", "another", "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(file, expected)
+	
+	#grab the value out of the cache and check for equality
+	pkgCache <- get("testhash", envir=.cacheEnv)
+	expect_identical(pkgCache[[1]], file)
+	
+	#corrupt the cache
+	pkgCache[[1]][,1] <- 0:2	
+	assign("testhash", pkgCache, envir=.cacheEnv)
+	
+	#check that it's serving the corrupted file
+	file <- get_file(pkg, "data.json", cache=TRUE)
+	expect_false(identical(file, expected))
+	
+	#flush the cache and check that proper file is restored
+	file <- get_file(pkg, "data.json", cache="flush")
+	expect_identical(file, expected)
+	pkgCache <- get("testhash", envir=.cacheEnv)
+	expect_identical(pkgCache[[1]], file)
+	
+	flush_cache()
+})
+
+
+test_that("Invalid cache throws error", {	
+	pkg <- read_data_package("../extdata/datapackage.json")
+			
+	expect_error(file <- get_file(pkg, "data.json", cache="foo"), "cache value")
+	
+	flush_cache()
+})
+

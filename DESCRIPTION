@@ -10,7 +10,8 @@ Description: An R Client for Interacting with Data Encoded in one of the 'Open
     Data Protocols' Standards.
 Imports:
     rjson (>= 0.2.10),
-    httr (>= 0.2)
+    httr (>= 0.2),
+    digest (>= 0.5.2)
 License: MIT
 Collate:
     'read-json-table.R'
@@ -18,3 +19,5 @@ Collate:
     'read-data-package.R'
     'print-data-package.R'
     'get-file.R'
+    'on-attach.R'
+    'flush-cache.R'
