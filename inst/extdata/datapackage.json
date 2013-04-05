@@ -24,8 +24,9 @@
             "type":"string"
           }
         ]
-      },
-      {
+      }
+    },
+    {
       "path": "data2.json",
       "schema": {
         "fields":[
