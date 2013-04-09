@@ -2,7 +2,7 @@
 \alias{get_file}
 \title{Download Data Package File}
 \usage{
-  get_file(dataPkg, file, cache = FALSE)
+  get_file(dataPkg, file, cache = TRUE)
 }
 \arguments{
   \item{dataPkg}{The Data Package (as loaded from
