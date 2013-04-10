@@ -150,15 +150,18 @@ test_that("No cache when disabled", {
 	#manually set hash to verify in testing
 	pkg$hash <- "testhash"
 	
+	flush_cache()
+	
 	expect_true(!exists("testhash", envir=.cacheEnv))
- 	
+	expect_equal(length(ls(envir=.cacheEnv)),0)
+			
  	file <- get_file(pkg, "data.json", cache=FALSE)
 
 	expected <- data.frame(Column.A=4:6, 
 												 Column.B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
-	
+		
 	expect_true(!exists("testhash", envir=.cacheEnv))
 	expect_equal(length(ls(envir=.cacheEnv)),0)
 	

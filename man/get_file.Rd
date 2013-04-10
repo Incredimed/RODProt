@@ -33,19 +33,19 @@
   prefacing slash). }}
 
   \item{cache}{Whether or not to cache the file once
-  retrieved. If \code{TRUE}, the function will check this
-  Data Package to see if the file has already been cached.
-  If it has, it will simply return the file from the cache.
-  If it has not, the function will retrieve the remote file
-  then save a copy in this package's cache. Note that this
-  will involve storing an extra copy of the data, doubling
-  memory usage. If \code{FALSE}, the function will retrieve
-  the file remotely, but not store the result in the cache
-  when returning. The third option is to set cache to
-  \code{"flush"}. When this occurs, the function will
-  retrieve the file remotely, ignoring any pre-existing
-  local copy, and store the result in the cache for future
-  use.}
+  retrieved. If \code{TRUE}, (default) the function will
+  check this Data Package to see if the file has already
+  been cached. If it has, it will simply return the file
+  from the cache. If it has not, the function will retrieve
+  the remote file then save a copy in this package's cache.
+  Note that this will involve storing an extra copy of the
+  data, doubling memory usage. If \code{FALSE}, the
+  function will retrieve the file remotely, but not store
+  the result in the cache when returning. The third option
+  is to set cache to \code{"flush"}. When this occurs, the
+  function will retrieve the file remotely, ignoring any
+  pre-existing local copy, and store the result in the
+  cache for future use.}
 }
 \description{
   Download a file referenced by a Data Package.
