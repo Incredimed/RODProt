@@ -2,7 +2,8 @@
 \alias{read_json_table}
 \title{A function to read in a JSON Table Schema}
 \usage{
-  read_json_table(content, schema, overlook.types = FALSE)
+  read_json_table(content, schema, overlook.types = FALSE,
+    factorize.foreign.keys = TRUE)
 }
 \arguments{
   \item{content}{The content to convert. This can either be
@@ -24,6 +25,15 @@
   encountering a non-supported type. The currently
   supported types are: (\code{boolean}, \code{string},
   \code{integer}, and \code{number}).}
+
+  \item{factorize.foreign.keys}{When \code{TRUE} (default),
+  any column leveraging the (non-standardized, at the time
+  of writing -- see
+  \url{https://github.com/dataprotocols/dataprotocols/issues/23})
+  foreign-key functionality of JSON Table Schemas will be
+  handled as a fator, mapping the underlying key to the
+  presented form. Currently, this only works with foreign
+  keys that map integers to strings.}
 }
 \description{
   A function to read in a JSON Table Schema

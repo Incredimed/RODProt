@@ -5,8 +5,8 @@ test_that("get local file works", {
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 	
@@ -16,8 +16,8 @@ test_that("get remote file works", {
 	
 	pkg <- read_data_package("http://raw.github.com/QBRC/RODProt/3990112d90caa5685771e6039e88a48277e993f5/inst/extdata/datapackage.json")
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 	
@@ -30,14 +30,14 @@ test_that("mixed URLs and paths works", {
 	pkg$files[[2]]$url <- "http://raw.github.com/QBRC/RODProt/3990112d90caa5685771e6039e88a48277e993f5/inst/extdata/data2.json"
 	
 	file <- get_file(pkg, "data2.json")
-	expected <- data.frame(Column.A=7:9, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=7:9, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 	
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 	
@@ -59,8 +59,8 @@ test_that("Escaped path works properly", {
 	pkg$files[[1]]$path <- "../extdata/data.json"
 		
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 })
@@ -83,8 +83,8 @@ test_that("Field hash name takes precedence", {
 	pkg$files[[2]]$id <- "A"
 		
 	file <- get_file(pkg, "A")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 })
@@ -96,8 +96,8 @@ test_that("Field ID takes precedence", {
 	pkg$files[[2]]$name <- "A"
 	
 	file <- get_file(pkg, "A")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 })
@@ -110,8 +110,8 @@ test_that("Field Name takes precedence", {
 	pkg$files[[2]]$path <- "A"
 	
 	file <- get_file(pkg, "A")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 })
@@ -123,8 +123,8 @@ test_that("Exact URL/path takes precedence", {
 	pkg$files[[2]]$path <- "../extdata/data.json"
 	
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
 })
@@ -135,8 +135,8 @@ test_that("Trimmed path works", {
 	pkg$files[[1]]$path <- "../extdata/data.json"
 	
 	file <- get_file(pkg, "data.json")
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
 })
@@ -157,8 +157,8 @@ test_that("No cache when disabled", {
 			
  	file <- get_file(pkg, "data.json", cache=FALSE)
 
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
 		
@@ -177,8 +177,8 @@ test_that("Cache when enabled", {
 	
 	file <- get_file(pkg, "data.json", cache=TRUE)
 	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
 	
@@ -201,8 +201,8 @@ test_that("Cache flush works", {
 	
 	file <- get_file(pkg, "data.json", cache=TRUE)
 	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
 	

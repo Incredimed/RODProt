@@ -1,6 +1,7 @@
 {
   "name": "sample-data",
   "title": "Sample Data",
+  "id": "data",
   "sources": [{
     "name": "World Bank and OECD",
     "web": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
@@ -17,7 +18,12 @@
           {
             "id":"A",
              "label":"Column A",
-             "type":"integer"		
+             "type":"integer",
+	     "foreignkey": {
+                "pkg": "http://qbrc.swmed.edu/lcdb/datapackage.json",
+                "file": "data2",
+                "id": "A"
+             }
           },{
             "id":"B",
             "label":"Column B",
@@ -28,6 +34,7 @@
     },
     {
       "path": "data2.json",
+      "id": "data2",
       "schema": {
         "fields":[
           {

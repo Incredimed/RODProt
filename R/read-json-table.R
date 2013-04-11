@@ -12,12 +12,18 @@
 #' just be treated as a character vector. Otherwise, the function will terminate
 #' upon encountering a non-supported type. The currently supported types are: 
 #' (\code{boolean}, \code{string}, \code{integer}, and \code{number}).
+#' @param factorize.foreign.keys When \code{TRUE} (default), any column leveraging
+#' the (non-standardized, at the time of writing -- see 
+#' \url{https://github.com/dataprotocols/dataprotocols/issues/23}) foreign-key 
+#' functionality of JSON Table Schemas will be handled as a fator, mapping the
+#' underlying key to the presented form. Currently, this only works with foreign
+#' keys that map integers to strings.
 #' @importFrom rjson fromJSON
 #' @importFrom httr GET
 #' @importFrom httr content
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-read_json_table <- function(content, schema, overlook.types=FALSE){	
+read_json_table <- function(content, schema, overlook.types=FALSE, factorize.foreign.keys=TRUE){	
 	if (missing(content)){
 		content <- list()
 	}
@@ -135,12 +141,11 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		col <- get(type[i])(length=length(data))
 		
 		thisCol <- list()
-		if (!is.null(thisSchema$label)){
-			thisCol[[thisSchema$label]] <- col
-		} else{
-			thisCol[[thisSchema$id]] <- col
-		}
-				
+		#TODO: do something with column labels. Perhaps extend the data.frame class (preface 
+		# our objects with some new class name which prints using labels, but actually indexes
+		# using IDs.
+		thisCol[[thisSchema$id]] <- col
+						
 		table <- c(table, thisCol)
 		idMap[i] <- thisSchema$id
 	}
@@ -191,5 +196,8 @@ read_json_table <- function(content, schema, overlook.types=FALSE){
 		table[namedInd,] <- mat
 	}
 	
+	if (factorize.foreign.keys){
+		#table <- incorporate_foreign_keys(table, schema)
+	}
 	table
 }

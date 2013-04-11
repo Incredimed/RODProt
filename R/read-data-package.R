@@ -22,6 +22,7 @@ read_data_package <- function(content, base){
 		#download remote file
 		json <- fromJSON(content(GET(content)))
 		base <- dirname(content)
+		json$url <- content
 	} else{
   	#must be raw JSON
   	json <- fromJSON(content)

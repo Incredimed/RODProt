@@ -70,8 +70,8 @@ test_that("labeled JSON works", {
 		]}'
 	
 	tab <- read_json_table(json)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 		
@@ -96,8 +96,8 @@ test_that("reverse-ordered fields and data works", {
 	}'
 	
 	tab <- read_json_table(json)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 	})
@@ -121,8 +121,8 @@ test_that("mixed-array JSON works", {
 		]}'
 	
 	tab <- read_json_table(json)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 })
@@ -145,8 +145,8 @@ test_that("combined array and named JSON works", {
 		]}'
 	
 	tab <- read_json_table(json)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 	
@@ -170,8 +170,8 @@ test_that("separate schema with nested keys works", {
 	]}'
 	
 	tab <- read_json_table(data, schema)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 })
@@ -194,8 +194,8 @@ test_that("separate schema without nested keys works", {
 	]'
 	
 	tab <- read_json_table(data, schema)	
-	expected <- data.frame(Column.A=4:6, 
-												 Column.B=c("test", "another", "final"), 
+	expected <- data.frame(A=4:6, 
+												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 	})
@@ -241,8 +241,8 @@ test_that("un-schema'd name column warns", {
 	
 	expect_warning(tab <- read_json_table(json),
 								 "ignored.*C")
-	expected <- data.frame(Column.A=4:5, 
-												 Column.B=c(NA, "another"), 
+	expected <- data.frame(A=4:5, 
+												 B=c(NA, "another"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)	
 })
@@ -345,8 +345,8 @@ test_that("data-less JSON produces empty data.frame", {
 	"data":[]}'
 	
 	tab <- read_json_table(json)	
-	expected <- data.frame(Column.A=integer(), 
-												 Column.B=character(), 
+	expected <- data.frame(A=integer(), 
+												 B=character(), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 })
@@ -364,8 +364,8 @@ test_that("missing data produces empty data.frame", {
 }]}'
 	
 	tab <- read_json_table(schema=schema)	
-	expected <- data.frame(Column.A=integer(), 
-												 Column.B=character(), 
+	expected <- data.frame(A=integer(), 
+												 B=character(), 
 												 stringsAsFactors=FALSE)
 	expect_identical(tab, expected)
 	})
@@ -485,8 +485,8 @@ test_that("Overlook invalid type produces no issues", {
 
 test_that("remote URL works", {
   tab <- read_json_table("http://raw.github.com/QBRC/RODProt/63cd96f91ccdae6e8358393211ea3d88870c8eb0/data/mixed.json")
-  expected <- data.frame(Column.A=4:6,
-                         Column.B=c("test", "another", "final"), 
+  expected <- data.frame(A=4:6,
+                         B=c("test", "another", "final"), 
                          stringsAsFactors=FALSE)
   expect_identical(tab, expected)
 })
@@ -494,8 +494,8 @@ test_that("remote URL works", {
 test_that("separate remote URL works", {
   tab <- read_json_table(content="http://raw.github.com/QBRC/RODProt/cd95fe955ae3e97cab528540874361b08ebc2aa9/data/data.json",
                          schema="http://raw.github.com/QBRC/RODProt/cd95fe955ae3e97cab528540874361b08ebc2aa9/data/schema.json")
-  expected <- data.frame(Column.A=4:6,
-                         Column.B=c("test", "another", "final"), 
+  expected <- data.frame(A=4:6,
+                         B=c("test", "another", "final"), 
                          stringsAsFactors=FALSE)
   expect_identical(tab, expected)
 })
