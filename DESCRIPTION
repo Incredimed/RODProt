@@ -21,3 +21,4 @@ Collate:
     'get-file.R'
     'on-attach.R'
     'flush-cache.R'
+    'incorporate-foreign-keys.R'

@@ -18,12 +18,17 @@
 #' functionality of JSON Table Schemas will be handled as a fator, mapping the
 #' underlying key to the presented form. Currently, this only works with foreign
 #' keys that map integers to strings.
+#' @param ... Arguments to be passed on to \link{incorporate_foreign_keys}.
 #' @importFrom rjson fromJSON
 #' @importFrom httr GET
 #' @importFrom httr content
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-read_json_table <- function(content, schema, overlook.types=FALSE, factorize.foreign.keys=TRUE){	
+read_json_table <- function(content, 
+														schema, 
+														overlook.types=FALSE, 
+														factorize.foreign.keys=TRUE,
+														...){	
 	if (missing(content)){
 		content <- list()
 	}
@@ -197,7 +202,7 @@ read_json_table <- function(content, schema, overlook.types=FALSE, factorize.for
 	}
 	
 	if (factorize.foreign.keys){
-		#table <- incorporate_foreign_keys(table, schema)
+		table <- incorporate_foreign_keys(table, schema, ...)
 	}
 	table
 }

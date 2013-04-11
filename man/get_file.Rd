@@ -2,7 +2,7 @@
 \alias{get_file}
 \title{Download Data Package File}
 \usage{
-  get_file(dataPkg, file, cache = TRUE)
+  get_file(dataPkg, file, cache = TRUE, ...)
 }
 \arguments{
   \item{dataPkg}{The Data Package (as loaded from
@@ -46,6 +46,9 @@
   function will retrieve the file remotely, ignoring any
   pre-existing local copy, and store the result in the
   cache for future use.}
+
+  \item{...}{Arguments to be passed on to
+  \link{read_json_table}.}
 }
 \description{
   Download a file referenced by a Data Package.

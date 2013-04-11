@@ -13,17 +13,13 @@
   "files": [
      {
       "path": "data.json",
+      "id": "data",
       "schema": {
         "fields":[
           {
             "id":"A",
              "label":"Column A",
-             "type":"integer",
-	     "foreignkey": {
-                "pkg": "http://qbrc.swmed.edu/lcdb/datapackage.json",
-                "file": "data2",
-                "id": "A"
-             }
+             "type":"integer"
           },{
             "id":"B",
             "label":"Column B",
@@ -45,6 +41,88 @@
             "id":"B",
             "label":"Column B",
             "type":"string"
+          }
+        ]
+      }
+    },
+
+    {
+      "path": "data3.json",
+      "id": "data3",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer",
+	     "foreignkey": {
+                "pkg": "../extdata/datapackage.json",
+                "file": "data",
+                "id": "A"
+             }
+          },{
+            "id":"B",
+            "label":"Column B",
+            "type":"string"
+          }
+        ]
+      }
+    },
+
+    {
+      "path": "data-single.json",
+      "id": "data-single",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer"		
+          }
+        ]
+      }
+    },
+
+    {
+      "path": "data-threecol.json",
+      "id": "data-threecol",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer"		
+          },{
+            "id":"B",
+            "label":"Column B",
+            "type":"string"
+          },{
+	    "id":"C",
+            "label": "Column C",
+            "type":"string"
+          }
+        ]
+      }
+    },
+
+
+    {
+      "path": "data-threecol2.json",
+      "id": "data-threecol2",
+      "schema": {
+        "fields":[
+          {
+            "id":"A",
+             "label":"Column A",
+             "type":"integer"		
+          },{
+            "id":"B",
+            "label":"Column B",
+            "type":"string"
+          },{
+	    "id":"C",
+            "label": "Column C",
+	    "type":"string"
           }
         ]
       }

@@ -6,9 +6,9 @@ test_that("local data package works", {
 	expect_equal(pkg$name, "sample-data")
 	expect_equal(pkg$title, "Sample Data")
 	expect_equal(length(pkg$licenses), 1)
-	expect_equal(length(pkg$files), 2)
+	expect_equal(length(pkg$files), 6)
 	expect_equal(pkg$base, "../extdata")
-	expect_equal(pkg$hash, "f1ee19f9b54f5c312e6054d2bd0ea1cae2da2ed763c8a2ada91d17860ed7e9a3")
+	expect_equal(pkg$hash, "e8ef7db80494d4c77b384ef43a1595269503d8e0e24070b3b12ccce7a454b1ee")
 	})
 
 test_that("remote data package works", {

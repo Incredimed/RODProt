@@ -29,10 +29,11 @@
 #' is to set cache to \code{"flush"}. When this occurs, the function will retrieve the 
 #' file remotely, ignoring any pre-existing local copy, and store the result in the cache
 #' for future use.
+#' @param ... Arguments to be passed on to \link{read_json_table}.
 #' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-get_file <- function(dataPkg, file, cache=TRUE){	
+get_file <- function(dataPkg, file, cache=TRUE, ...){	
 	if (cache != TRUE && cache != FALSE && cache!= "flush"){
 		stop("Invalid cache value. Must be TRUE, FALSE, or 'flush'.")
 	}
@@ -103,9 +104,9 @@ get_file <- function(dataPkg, file, cache=TRUE){
 			url <- paste(dataPkg$base, thisFile$url, sep="/")
 		}
 		
-		toReturn <- read_json_table(url, thisFile$schema)
+		toReturn <- read_json_table(url, thisFile$schema, ...)
 	} else if (!is.null(thisFile$path)){
-		toReturn <- read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), thisFile$schema)
+		toReturn <- read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), thisFile$schema, ...)
 	} else{
 		stop("File found, but no path or url field specified")
 	}	

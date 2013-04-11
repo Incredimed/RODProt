@@ -3,7 +3,7 @@
 \title{A function to read in a JSON Table Schema}
 \usage{
   read_json_table(content, schema, overlook.types = FALSE,
-    factorize.foreign.keys = TRUE)
+    factorize.foreign.keys = TRUE, ...)
 }
 \arguments{
   \item{content}{The content to convert. This can either be
@@ -34,6 +34,9 @@
   handled as a fator, mapping the underlying key to the
   presented form. Currently, this only works with foreign
   keys that map integers to strings.}
+
+  \item{...}{Arguments to be passed on to
+  \link{incorporate_foreign_keys}.}
 }
 \description{
   A function to read in a JSON Table Schema
