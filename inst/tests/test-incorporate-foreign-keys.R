@@ -5,7 +5,7 @@ test_that("Read foreign key properly",{
 	table <- get_file(pkg, "data3")	
 	
 	#Will warn that duplicated levels are going away
-	expect_warning({
+	suppressWarnings({
 		expected <- data.frame(A=factor(4:6, 
 																		levels=1:6, 
 																		labels=c(rep(NA_character_, 3),
@@ -43,7 +43,7 @@ test_that("Three column factorizes properly",{
 	#modify schema to point foreign key to single data file
 	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
 	
-	table <- get_file(pkg, "data3", name.column="B")
+	table <- get_file(pkg, "data3", name.column="C", cache=FALSE)
 	
 	#Will warn that duplicated levels are going away
 	expect_warning({
@@ -64,7 +64,7 @@ test_that("Three column factorizes on another column properly",{
 	#modify schema to point foreign key to single data file
 	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
 	
-	table <- get_file(pkg, "data3", name.column="C")
+	table <- get_file(pkg, "data3", name.column="B", cache=FALSE)
 	
 	#Will warn that duplicated levels are going away
 	expect_warning({
@@ -95,8 +95,7 @@ test_that("Missing multi-col factors convert to NA",{
 													 B=c("level 4", "level 5", "level 6"), 
 													 stringsAsFactors=FALSE)
 	})
-	expect_identical(table, expected)			
-	
+	expect_identical(table, expected)	
 })
 
 test_that("Misnamed column errors",{
@@ -105,5 +104,91 @@ test_that("Misnamed column errors",{
 	#modify schema to point foreign key to single data file
 	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol"
 	
-	expect_error(get_file(pkg, "data3"), "name.column value")		
+	expect_error(get_file(pkg, "data3", cache=FALSE, name.columns="name"), "name.column value")		
 })
+
+test_that("Misnamed column as list errors",{
+	pkg <- read_data_package("../extdata/datapackage.json")
+	
+	#modify schema to point foreign key to single data file
+	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol"
+	
+	suppressWarnings({
+		expect_error(get_file(pkg, "data3", cache=FALSE, name.columns=list(fileA="name")), "name.column value")		
+	})
+})
+
+
+test_that("Missing file name from column.name list warns but works",{
+	pkg <- read_data_package("../extdata/datapackage.json")
+	
+	#modify schema to point foreign key to single data file
+	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	
+	expect_warning(table <- get_file(pkg, "data3", name.column=list(fileA="B"), cache=FALSE))
+	
+	#Will warn that duplicated levels are going away
+	suppressWarnings({
+		expected <- data.frame(A=factor(4:6, 
+																		levels=1:6, 
+																		labels=c(rep(NA_character_, 3),
+																						 "test", "another", "final")), 
+													 B=c("level 4", "level 5", "level 6"), 
+													 stringsAsFactors=FALSE)
+	})
+	expect_identical(table, expected)	
+})
+
+test_that("Three column factorizes on another column properly",{
+	pkg <- read_data_package("../extdata/datapackage.json")
+	
+	#modify schema to point foreign key to single data file
+	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	
+	table <- get_file(pkg, "data3", name.column="B", cache=FALSE)
+	
+	#Will warn that duplicated levels are going away
+	suppressWarnings({
+		expected <- data.frame(A=factor(4:6, 
+																		levels=1:6, 
+																		labels=c(rep(NA_character_, 3),
+																						 "test", "another", "final")), 
+													 B=c("level 4", "level 5", "level 6"), 
+													 stringsAsFactors=FALSE)
+	})
+	expect_identical(table, expected)	
+})
+
+# 
+# test_that("Cache properly considers name.column parameter",{
+# 	pkg <- read_data_package("../extdata/datapackage.json")
+# 	
+# 	#modify schema to point foreign key to single data file
+# 	pkg$files[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+# 	
+# 	table <- get_file(pkg, "data3", name.column="C", cache=TRUE)
+# 	
+# 	#Will warn that duplicated levels are going away
+# 	expect_warning({
+# 		expected <- data.frame(A=factor(4:6, 
+# 																		levels=1:6, 
+# 																		labels=c(rep(NA_character_, 3),
+# 																						 "strA", "strB", "strC")), 
+# 													 B=c("level 4", "level 5", "level 6"), 
+# 													 stringsAsFactors=FALSE)
+# 	})
+# 	expect_identical(table, expected)	
+# 	
+# 	table <- get_file(pkg, "data3", name.column="B", cache=TRUE)
+# 	
+# 	#Will warn that duplicated levels are going away
+# 	expect_warning({
+# 		expected <- data.frame(A=factor(4:6, 
+# 																		levels=1:6, 
+# 																		labels=c(rep(NA_character_, 3),
+# 																						 "test", "another", "final")), 
+# 													 B=c("level 4", "level 5", "level 6"), 
+# 													 stringsAsFactors=FALSE)
+# 	})
+# 	expect_identical(table, expected)	
+# })

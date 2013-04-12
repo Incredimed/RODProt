@@ -5,7 +5,7 @@
 #' underlying level.
 #' @param table The JSON Table as read in from \link{read_json_table}.
 #' @param schema The JSON Table Schema associated with this table.
-#' @param name.column the name of the column to use as the levels of the factor. If the referenced
+#' @param name.columns the name of the column to use as the levels of the factor. If the referenced
 #' table has two of fewer columns, this value will be ignored. See Details for more information. 
 #' @details This function aims to create factors from the columns identified as having a foreign
 #' key in the provided schema. In order to do this in R, up to two columns will be involved: the
@@ -23,10 +23,12 @@
 #' be specified using the \code{name.column} parameter.
 #' @importFrom rjson fromJSON
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
-incorporate_foreign_keys <- function(table, schema, name.column="name"){	
+incorporate_foreign_keys <- function(table, schema, name.columns="name"){	
 	if (is.character(schema)){
 		schema <- fromJSON(schema)
 	}
+	
+	
 	
 	fks <- lapply(schema, "[[" , "foreignkey")
 
@@ -37,6 +39,25 @@ incorporate_foreign_keys <- function(table, schema, name.column="name"){
 		dataPkg <- read_data_package(x$pkg)		
 		file <- get_file(dataPkg, x$file)
 		
+		
+		#assume that it's just a length one character.
+		col.name <- name.columns
+		
+		#check to see if that assumption is invalid
+		if (length(name.columns) > 1 || is.list(name.columns)){
+			if (x$file %in% names(name.columns)){			
+				#this file has an explicitly specified column name to use
+				col.name <- name.columns[[x$file]]
+				
+			} else{
+				#column names were specified, but not this one. Default to the first with a warning.
+				warning(paste("the name.columns parameter was set for some files, but no column name was set for the file with ID: '",
+											x$file, "'. Defaulting to the first column name specified.", sep=""))
+				col.name <- name.columns[[1]]
+				
+			}				
+		}
+				
 		if (!x$id %in% colnames(file)){
 			stop("The ID specified in the foreignkey was not found in the file.")
 		}
@@ -58,18 +79,16 @@ incorporate_foreign_keys <- function(table, schema, name.column="name"){
 			levs <- rep(NA_character_, length=max(file[[x$id]]))
 			levs[as.integer(file[[x$id]])] <- file[[which(colnames(file) != x$id)]]
 			attr(fac, "levels") <- levs
-						
+			
 			return(fac)
 		}
 		if (ncol(file) > 2){			
-			browser()
-			
-			if (! name.column %in% colnames(file)){
+			if (! col.name %in% colnames(file)){
 				stop("The name.column value was not found in the file. See the documentation and Details section for how to correct this.")
 			}
 			fac <- factor()			
 			levs <- rep(NA_character_, length=max(file[[x$id]]))
-			levs[as.integer(file[[x$id]])] <- file[[name.column]]
+			levs[as.integer(file[[x$id]])] <- file[[col.name]]
 			attr(fac, "levels") <- levs			
 			
 			return(fac)

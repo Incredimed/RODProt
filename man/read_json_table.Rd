@@ -35,8 +35,9 @@
   presented form. Currently, this only works with foreign
   keys that map integers to strings.}
 
-  \item{...}{Arguments to be passed on to
-  \link{incorporate_foreign_keys}.}
+  \item{...}{Additional arugments to be passed to
+  \code{incorporate-foreign-keys} (unexported, but publicly
+  documented in this package).}
 }
 \description{
   A function to read in a JSON Table Schema

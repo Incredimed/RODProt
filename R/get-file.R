@@ -106,7 +106,9 @@ get_file <- function(dataPkg, file, cache=TRUE, ...){
 		
 		toReturn <- read_json_table(url, thisFile$schema, ...)
 	} else if (!is.null(thisFile$path)){
-		toReturn <- read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), thisFile$schema, ...)
+		toReturn <- read_json_table(paste(dataPkg$base, thisFile$path, sep="/"), 
+																thisFile$schema, 																
+																...)
 	} else{
 		stop("File found, but no path or url field specified")
 	}	

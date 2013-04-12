@@ -3,7 +3,7 @@
 \title{Factorize foreign keys}
 \usage{
   incorporate_foreign_keys(table, schema,
-    name.column = "name")
+    name.columns = "name")
 }
 \arguments{
   \item{table}{The JSON Table as read in from
@@ -12,7 +12,7 @@
   \item{schema}{The JSON Table Schema associated with this
   table.}
 
-  \item{name.column}{the name of the column to use as the
+  \item{name.columns}{the name of the column to use as the
   levels of the factor. If the referenced table has two of
   fewer columns, this value will be ignored. See Details
   for more information.}
