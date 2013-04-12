@@ -86,8 +86,18 @@ get_file <- function(dataPkg, file, cache=TRUE, ...){
 	
 	thisFile <- dataPkg$files[[ind]]
 	
-	if (cache==TRUE && exists(dataPkg$hash, envir=.cacheEnv)){
-		pkgCache <- get(dataPkg$hash, envir=.cacheEnv)		
+	#compute a hash on the list of arguments passed in which will be passed to
+	# other functions. We don't really care what they are in this function, but
+	# we need to consider them for the purpose of caching. An object created in
+	# this function passing a certain set of arguments to a child function can not
+	# be guaranteed to be the same as the object with a different set of ... 
+	# arguments. So include this hash in our caching key.
+	argsHash <- digest(list(...), algo="sha256")
+	
+	thisPkgHash <- paste(dataPkg$hash, argsHash, sep="-")
+	
+	if (cache==TRUE && exists(thisPkgHash, envir=.cacheEnv)){
+		pkgCache <- get(thisPkgHash, envir=.cacheEnv)		
 		fileCache <- pkgCache[[digest(thisFile, algo="sha256")]]
 		if(!is.null(fileCache)){
 			#requested value from cache and it's available in cache. Serve from cache.
@@ -114,15 +124,15 @@ get_file <- function(dataPkg, file, cache=TRUE, ...){
 	}	
 	
 	if (cache=="TRUE" || tolower(cache) == "flush"){
-		if (exists(dataPkg$hash, envir=.cacheEnv)){
-			pkgCache <- get(dataPkg$hash, envir=.cacheEnv)				
+		if (exists(thisPkgHash, envir=.cacheEnv)){
+			pkgCache <- get(thisPkgHash, envir=.cacheEnv)				
 		} else{
 			pkgCache <- list()
 		}
 				
 		pkgCache[[digest(thisFile, algo="sha256")]] <- toReturn
 		
-		assign(dataPkg$hash, pkgCache, envir=.cacheEnv)
+		assign(thisPkgHash, pkgCache, envir=.cacheEnv)
 	}	
 	
 	return(toReturn)

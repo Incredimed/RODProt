@@ -161,8 +161,7 @@ test_that("No cache when disabled", {
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)
-		
-	expect_true(!exists("testhash", envir=.cacheEnv))
+	
 	expect_equal(length(ls(envir=.cacheEnv)),0)
 	
 	flush_cache()
@@ -173,7 +172,7 @@ test_that("Cache when enabled", {
 	#manually set hash to verify in testing
 	pkg$hash <- "testhash"
 	
-	expect_true(!exists("testhash", envir=.cacheEnv))
+	expect_equal(length(ls(envir=.cacheEnv)), 0)
 	
 	file <- get_file(pkg, "data.json", cache=TRUE)
 	
@@ -184,7 +183,9 @@ test_that("Cache when enabled", {
 	
 	expect_equal(length(ls(envir=.cacheEnv)),1)
 	
-	pkgCache <- get("testhash", envir=.cacheEnv)
+	items <- ls(envir=.cacheEnv)
+	varHash <- items[grepl("^testhash-", items)]
+	pkgCache <- get(varHash, envir=.cacheEnv)
 	expect_identical(pkgCache[[1]], file)
 	
 	flush_cache()
@@ -207,12 +208,15 @@ test_that("Cache flush works", {
 	expect_identical(file, expected)
 	
 	#grab the value out of the cache and check for equality
-	pkgCache <- get("testhash", envir=.cacheEnv)
+	items <- ls(envir=.cacheEnv)
+	expect_equal(length(items), 1)
+	varHash <- items[grepl("^testhash-", items)]
+	pkgCache <- get(varHash, envir=.cacheEnv)
 	expect_identical(pkgCache[[1]], file)
 	
 	#corrupt the cache
 	pkgCache[[1]][,1] <- 0:2	
-	assign("testhash", pkgCache, envir=.cacheEnv)
+	assign(varHash, pkgCache, envir=.cacheEnv)
 	
 	#check that it's serving the corrupted file
 	file <- get_file(pkg, "data.json", cache=TRUE)
@@ -221,7 +225,7 @@ test_that("Cache flush works", {
 	#flush the cache and check that proper file is restored
 	file <- get_file(pkg, "data.json", cache="flush")
 	expect_identical(file, expected)
-	pkgCache <- get("testhash", envir=.cacheEnv)
+	pkgCache <- get(varHash, envir=.cacheEnv)
 	expect_identical(pkgCache[[1]], file)
 	
 	flush_cache()
