@@ -11,7 +11,8 @@ Description: An R Client for Interacting with Data Encoded in one of the 'Open
 Imports:
     rjson (>= 0.2.10),
     httr (>= 0.2),
-    digest (>= 0.5.2)
+    digest (>= 0.5.2),
+    methods
 License: MIT
 Collate:
     'read-json-table.R'
