@@ -7,31 +7,44 @@
 #' This will be ignored if the \code{content} provided is either a URL
 #' or a local file. Only if \code{content} is a character string will
 #' this be used.
+#' @param getter The \link{Getter} to use when retrieving the specified data. By
+#' default, the getter will be inferred based on the structure of the 
+#' \code{content} parameter. Alternatively, you can explicitly set one here, or 
+#' even provide a custom getter.
 #' @importFrom rjson fromJSON
 #' @importFrom httr GET
 #' @importFrom httr content
 #' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
-read_data_package <- function(content, base){
-	if (file.exists(content)){
-		#open local file
-		json <- fromJSON(file=content)
-		base <- dirname(content)
-	} else if (tolower(substr(content,0, 4)) == "http"){
-		#download remote file
-		json <- fromJSON(content(GET(content), as="text"))
-		base <- dirname(content)
-		json$url <- content
+read_data_package <- function(content, base, getter){
+	raw <- FALSE
+	if (missing(getter)){
+		if (file.exists(content)){
+			getter <- LocalGetter$new()			
+		} else if (tolower(substr(content,0, 4)) == "http"){
+			getter <- HTTPGetter$new()			
+		} else{
+	  	#must be raw JSON
+	  	getter <- RawGetter$new()
+	  	raw <- TRUE
+	  }
+	} 
+	
+  json <- fromJSON(getter$get(content))
+	
+	#if (getter$className == "RawGetter"){ TODO: Figure out how to compare classes
+	if (raw){
+		if (missing(base)){
+			warning("You didn't specify a base directory and provided the package content directly, so we won't know how to find any files referenced within this Data Package. Consider setting the 'base' variable or providing a file/URL reference instead of the JSON itself.")
+			base <- NULL
+		} else{
+			base <- base
+		}		
 	} else{
-  	#must be raw JSON
-  	json <- fromJSON(content)
-  	if (missing(base)){
-  		warning("You didn't specify a base directory and provided the package content directly, so we won't know how to find any files referenced within this Data Package. Consider setting the 'base' variable or providing a file/URL reference instead of the JSON itself.")
-  		base <- NULL
-  	}  	
-  }
-  
+		base <- dirname(content)		
+	}
+	
 	json$base <- base
   class(json) <- c("dataPackage", class(json))
 	

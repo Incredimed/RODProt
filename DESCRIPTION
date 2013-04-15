@@ -22,3 +22,7 @@ Collate:
     'on-attach.R'
     'flush-cache.R'
     'incorporate-foreign-keys.R'
+    'getter.R'
+    'getter-http.R'
+    'getter-local.R'
+    'getter-raw.R'

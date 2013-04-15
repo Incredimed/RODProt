@@ -3,7 +3,7 @@
 \title{A function to read in a JSON Table Schema}
 \usage{
   read_json_table(content, schema, overlook.types = FALSE,
-    factorize.foreign.keys = TRUE, ...)
+    factorize.foreign.keys = TRUE, getter, ...)
 }
 \arguments{
   \item{content}{The content to convert. This can either be
@@ -34,6 +34,12 @@
   handled as a fator, mapping the underlying key to the
   presented form. Currently, this only works with foreign
   keys that map integers to strings.}
+
+  \item{getter}{The \link{Getter} to use when retrieving
+  the specified data. By default, the getter will be
+  inferred based on the structure of the \code{content}
+  parameter. Alternatively, you can explicitly set one
+  here, or even provide a custom getter.}
 
   \item{...}{Additional arugments to be passed to
   \code{incorporate-foreign-keys} (unexported, but publicly

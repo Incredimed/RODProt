@@ -18,6 +18,10 @@
 #' functionality of JSON Table Schemas will be handled as a fator, mapping the
 #' underlying key to the presented form. Currently, this only works with foreign
 #' keys that map integers to strings.
+#' @param getter The \link{Getter} to use when retrieving the specified data. By
+#' default, the getter will be inferred based on the structure of the 
+#' \code{content} parameter. Alternatively, you can explicitly set one here, or 
+#' even provide a custom getter.
 #' @param ... Additional arugments to be passed to \code{incorporate-foreign-keys}
 #' (unexported, but publicly documented in this package).
 #' @importFrom rjson fromJSON
@@ -28,7 +32,9 @@
 read_json_table <- function(content, 
 														schema, 
 														overlook.types=FALSE, 
-														factorize.foreign.keys=TRUE, ...){	
+														factorize.foreign.keys=TRUE,
+														getter,
+														...){	
 	if (missing(content)){
 		content <- list()
 	}
@@ -38,14 +44,18 @@ read_json_table <- function(content,
 		#TODO: test
 		json <- content
 	}	else{
-		if (file.exists(content)){					
-			#Assume it's a local file and parse accordingly.
-			json <- fromJSON(file=content)
-		} else if (tolower(substr(content,0, 4)) == "http"){
-		  json <- fromJSON(content(GET(content), as="text"))
-    }else{
-			json <- fromJSON(content)
-		}	
+		if (missing(getter)){
+			if (file.exists(content)){
+				getter <- LocalGetter$new()			
+			} else if (tolower(substr(content,0, 4)) == "http"){
+				getter <- HTTPGetter$new()			
+			} else{
+				#must be raw JSON
+				getter <- RawGetter$new()
+			}
+		} 
+		
+		json <- fromJSON(getter$get(content))
 	}
 	
 	if (missing(schema)){
@@ -54,14 +64,20 @@ read_json_table <- function(content,
 	} else{		
 		if (class(schema) == "list"){
 			#already parsed
-		} else if (file.exists(schema)){
-			#Assume it's a local file and parse accordingly.
-			schema <- fromJSON(file=schema)
-		} else if (tolower(substr(schema,0, 4)) == "http"){
-		  schema <- fromJSON(content(GET(schema), as="text"))
-    } else{
-			schema <- fromJSON(schema)
-		}	
+		} else{
+			if (missing(getter)){
+				if (file.exists(schema)){
+					getter <- LocalGetter$new()			
+				} else if (tolower(substr(schema,0, 4)) == "http"){
+					getter <- HTTPGetter$new()			
+				} else{
+					#must be raw JSON
+					getter <- RawGetter$new()					
+				}
+			} 
+			
+			schema <- fromJSON(getter$get(schema))
+		} 
 		
 		#allow (encourage) schema to nest fields element in its JSON
 		if (!is.null(schema$fields)){
