@@ -20,7 +20,7 @@ read_data_package <- function(content, base){
 		base <- dirname(content)
 	} else if (tolower(substr(content,0, 4)) == "http"){
 		#download remote file
-		json <- fromJSON(content(GET(content)))
+		json <- fromJSON(content(GET(content), as="text"))
 		base <- dirname(content)
 		json$url <- content
 	} else{

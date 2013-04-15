@@ -42,7 +42,7 @@ read_json_table <- function(content,
 			#Assume it's a local file and parse accordingly.
 			json <- fromJSON(file=content)
 		} else if (tolower(substr(content,0, 4)) == "http"){
-		  json <- fromJSON(content(GET(content)))
+		  json <- fromJSON(content(GET(content), as="text"))
     }else{
 			json <- fromJSON(content)
 		}	
@@ -58,7 +58,7 @@ read_json_table <- function(content,
 			#Assume it's a local file and parse accordingly.
 			schema <- fromJSON(file=schema)
 		} else if (tolower(substr(schema,0, 4)) == "http"){
-		  schema <- fromJSON(content(GET(schema)))
+		  schema <- fromJSON(content(GET(schema), as="text"))
     } else{
 			schema <- fromJSON(schema)
 		}	
