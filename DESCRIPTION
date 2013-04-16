@@ -19,7 +19,6 @@ Collate:
     'write-json-table.R'
     'read-data-package.R'
     'print-data-package.R'
-    'get-file.R'
     'on-attach.R'
     'flush-cache.R'
     'incorporate-foreign-keys.R'
@@ -27,3 +26,5 @@ Collate:
     'getter-http.R'
     'getter-local.R'
     'getter-raw.R'
+    'getter-hmac.R'
+    'get-resource.R'
