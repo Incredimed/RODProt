@@ -42,7 +42,7 @@ read_json_table <- function(content,
 	if (class(content) == "list"){
 		#assume it's already a parsed JSON file.
 		#TODO: test
-		json <- content
+		json <- content		
 	}	else{
 		if (missing(getter)){
 			if (file.exists(content)){
@@ -89,7 +89,7 @@ read_json_table <- function(content,
 	
 	#allow (discourage) data to nest field under name of 'data'.
 	if (!is.null(names(data))){
-		if (names(data) == "data"){
+		if ("data" %in% names(data)){
 			data <- data$data
 		} else{
 			stop("data parameter should not have named elements.")
@@ -178,6 +178,17 @@ read_json_table <- function(content,
 	mixed <- data[!namedInd]
 	named <- data[namedInd]
 	
+	replaceInList <- function (x, FUN, ...) 
+	{ 
+		if (is.list(x)) { 
+			for (i in seq_along(x)) { 
+				x[i] <- list(replaceInList(x[[i]], FUN, ...)) 
+			} 
+			x 
+		} 
+		else FUN(x, ...) 
+	} 
+	
 	#process mixed-aray columns which have no names
 	mixLen <- length(mixed)	
 	if (mixLen > 0){		
@@ -222,3 +233,4 @@ read_json_table <- function(content,
 	}
 	table
 }
+

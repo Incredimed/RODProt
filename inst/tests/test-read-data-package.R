@@ -5,19 +5,19 @@ test_that("local data package works", {
 	expect_equal(pkg$name, "sample-data")
 	expect_equal(pkg$title, "Sample Data")
 	expect_equal(length(pkg$licenses), 1)
-	expect_equal(length(pkg$files), 6)
+	expect_equal(length(pkg$resources), 6)
 	expect_equal(pkg$base, "../extdata")
-	expect_equal(pkg$hash, "e8ef7db80494d4c77b384ef43a1595269503d8e0e24070b3b12ccce7a454b1ee")
+	expect_equal(pkg$hash, "5f230e4fda0ced36889ac64e699680e9c24be127689582296dd0747f3f5ad016")
 	})
 
 test_that("remote data package works", {
-	url <- "http://raw.github.com/QBRC/RODProt/abbd449be3dc3d40042749f8f895c93b4d504f1b/inst/extdata/datapackage.json"
+	url <- "http://raw.github.com/QBRC/RODProt/758feb1d65527d2125758f0682aae69d9e3f4707/inst/extdata/datapackage.json"
 	pkg <- read_data_package(url)
 		
 	expect_equal(pkg$name, "sample-data")
 	expect_equal(pkg$title, "Sample Data")
 	expect_equal(length(pkg$licenses), 1)
-	expect_equal(length(pkg$files), 1)
-	expect_equal(pkg$base, "http://raw.github.com/QBRC/RODProt/abbd449be3dc3d40042749f8f895c93b4d504f1b/inst/extdata")
-	expect_equal(pkg$hash, "8eb868b9c31dee0d066f34adf0d82ef51dd02e40e3458abe8267324af5138819")
+	expect_equal(length(pkg$resources), 6)
+	expect_equal(pkg$base, "http://raw.github.com/QBRC/RODProt/758feb1d65527d2125758f0682aae69d9e3f4707/inst/extdata")
+	expect_equal(pkg$hash, "f47f8801d0369b28d004faa1741d02ca38be947da5ff18d4afad4c67d9665e29")
 })

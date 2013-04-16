@@ -37,7 +37,7 @@ incorporate_foreign_keys <- function(table, schema, name.columns="name"){
 			return(NULL)
 		}
 		dataPkg <- read_data_package(x$pkg)		
-		file <- get_file(dataPkg, x$file)
+		file <- get_resource(dataPkg, x$file)
 		
 		
 		#assume that it's just a length one character.

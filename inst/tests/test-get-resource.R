@@ -1,10 +1,10 @@
-context("get_file")
+context("get_resource")
 
 test_that("get local file works", {
 	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	file <- get_file(pkg, "data.json")
+	file <- get_resource(pkg, "data.json", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -14,8 +14,8 @@ test_that("get local file works", {
 
 test_that("get remote file works", {
 	
-	pkg <- read_data_package("http://raw.github.com/QBRC/RODProt/3990112d90caa5685771e6039e88a48277e993f5/inst/extdata/datapackage.json")
-	file <- get_file(pkg, "data.json")
+	pkg <- read_data_package("http://raw.github.com/QBRC/RODProt/master/inst/extdata/datapackage.json")
+	file <- get_resource(pkg, "data.json", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -26,16 +26,16 @@ test_that("get remote file works", {
 test_that("mixed URLs and paths works", {
 	
 	pkg <- read_data_package("../extdata/datapackage.json")
-	pkg$files[[2]]$path <- NULL
-	pkg$files[[2]]$url <- "http://raw.github.com/QBRC/RODProt/3990112d90caa5685771e6039e88a48277e993f5/inst/extdata/data2.json"
+	pkg$resources[[2]]$path <- NULL
+	pkg$resources[[2]]$url <- "http://raw.github.com/QBRC/RODProt/3990112d90caa5685771e6039e88a48277e993f5/inst/extdata/data2.json"
 	
-	file <- get_file(pkg, "data2.json")
+	file <- get_resource(pkg, "data2.json", cache=FALSE)
 	expected <- data.frame(A=7:9, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
 	expect_identical(file, expected)	
 	
-	file <- get_file(pkg, "data.json")
+	file <- get_resource(pkg, "data.json")
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -46,19 +46,19 @@ test_that("mixed URLs and paths works", {
 test_that("Cannot set both URL and path", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$url <- "A"
-	pkg$files[[2]]$path <- "B"
+	pkg$resources[[1]]$url <- "A"
+	pkg$resources[[2]]$path <- "B"
 	
-	expect_error(get_file(pkg, "A"), "not specify both")	
+	expect_error(get_resource(pkg, "A", cache=FALSE), "not specify both")	
 })
 
 
 test_that("Escaped path works properly", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$path <- "../extdata/data.json"
+	pkg$resources[[1]]$path <- "../extdata/data.json"
 		
-	file <- get_file(pkg, "data.json")
+	file <- get_resource(pkg, "data.json", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -68,10 +68,10 @@ test_that("Escaped path works properly", {
 test_that("Multiple matched names fails", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$path <- "data.json"
-	pkg$files[[2]]$path <- "data.json"
+	pkg$resources[[1]]$path <- "data.json"
+	pkg$resources[[2]]$path <- "data.json"
 	
-	expect_error(get_file(pkg, "data.json"), "matches more than one")	
+	expect_error(get_resource(pkg, "data.json", cache=FALSE), "matches more than one")	
 })
 
 
@@ -79,10 +79,10 @@ test_that("Multiple matched names fails", {
 
 test_that("Field hash name takes precedence", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
-	names(pkg$files) <- c("A", "B")
-	pkg$files[[2]]$id <- "A"
+	names(pkg$resources) <- c("A", "B")
+	pkg$resources[[2]]$id <- "A"
 		
-	file <- get_file(pkg, "A")
+	file <- get_resource(pkg, "A", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -92,10 +92,10 @@ test_that("Field hash name takes precedence", {
 test_that("Field ID takes precedence", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$id <- "A"
-	pkg$files[[2]]$name <- "A"
+	pkg$resources[[1]]$id <- "A"
+	pkg$resources[[2]]$name <- "A"
 	
-	file <- get_file(pkg, "A")
+	file <- get_resource(pkg, "A", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -105,11 +105,11 @@ test_that("Field ID takes precedence", {
 test_that("Field Name takes precedence", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$name <- "A"
-	pkg$files[[2]]$url <- "A"
-	pkg$files[[2]]$path <- "A"
+	pkg$resources[[1]]$name <- "A"
+	pkg$resources[[2]]$url <- "A"
+	pkg$resources[[2]]$path <- "A"
 	
-	file <- get_file(pkg, "A")
+	file <- get_resource(pkg, "A", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -119,10 +119,10 @@ test_that("Field Name takes precedence", {
 test_that("Exact URL/path takes precedence", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	pkg$files[[1]]$path <- "data.json"
-	pkg$files[[2]]$path <- "../extdata/data.json"
+	pkg$resources[[1]]$path <- "data.json"
+	pkg$resources[[2]]$path <- "../extdata/data.json"
 	
-	file <- get_file(pkg, "data.json")
+	file <- get_resource(pkg, "data.json", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -132,9 +132,9 @@ test_that("Exact URL/path takes precedence", {
 test_that("Trimmed path works", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 		
-	pkg$files[[1]]$path <- "../extdata/data.json"
+	pkg$resources[[1]]$path <- "../extdata/data.json"
 	
-	file <- get_file(pkg, "data.json")
+	file <- get_resource(pkg, "data.json", cache=FALSE)
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
 												 stringsAsFactors=FALSE)
@@ -155,7 +155,7 @@ test_that("No cache when disabled", {
 	expect_true(!exists("testhash", envir=.cacheEnv))
 	expect_equal(length(ls(envir=.cacheEnv)),0)
 			
- 	file <- get_file(pkg, "data.json", cache=FALSE)
+ 	file <- get_resource(pkg, "data.json", cache=FALSE)
 
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
@@ -174,7 +174,7 @@ test_that("Cache when enabled", {
 	
 	expect_equal(length(ls(envir=.cacheEnv)), 0)
 	
-	file <- get_file(pkg, "data.json", cache=TRUE)
+	file <- get_resource(pkg, "data.json", cache=TRUE)
 	
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
@@ -200,7 +200,7 @@ test_that("Cache flush works", {
 	#check that cache is currently empty
 	expect_true(!exists("testhash", envir=.cacheEnv))
 	
-	file <- get_file(pkg, "data.json", cache=TRUE)
+	file <- get_resource(pkg, "data.json", cache=TRUE)
 	
 	expected <- data.frame(A=4:6, 
 												 B=c("test", "another", "final"), 
@@ -219,11 +219,11 @@ test_that("Cache flush works", {
 	assign(varHash, pkgCache, envir=.cacheEnv)
 	
 	#check that it's serving the corrupted file
-	file <- get_file(pkg, "data.json", cache=TRUE)
+	file <- get_resource(pkg, "data.json", cache=TRUE)
 	expect_false(identical(file, expected))
 	
 	#flush the cache and check that proper file is restored
-	file <- get_file(pkg, "data.json", cache="flush")
+	file <- get_resource(pkg, "data.json", cache="flush")
 	expect_identical(file, expected)
 	pkgCache <- get(varHash, envir=.cacheEnv)
 	expect_identical(pkgCache[[1]], file)
@@ -235,7 +235,7 @@ test_that("Cache flush works", {
 test_that("Invalid cache throws error", {	
 	pkg <- read_data_package("../extdata/datapackage.json")
 			
-	expect_error(file <- get_file(pkg, "data.json", cache="foo"), "cache value")
+	expect_error(file <- get_resource(pkg, "data.json", cache="foo"), "cache value")
 	
 	flush_cache()
 })
