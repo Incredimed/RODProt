@@ -7,6 +7,7 @@
 #' @param schema The JSON Table Schema associated with this table.
 #' @param name.columns the name of the column to use as the levels of the factor. If the referenced
 #' table has two of fewer columns, this value will be ignored. See Details for more information. 
+#' @param ... Parameters passed on to \code{\link{get_resource}}
 #' @details This function aims to create factors from the columns identified as having a foreign
 #' key in the provided schema. In order to do this in R, up to two columns will be involved: the
 #' ID columns (as specified in the \code{foreignkey} attribute in the schema), and the names or
@@ -23,7 +24,7 @@
 #' be specified using the \code{name.column} parameter.
 #' @importFrom rjson fromJSON
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
-incorporate_foreign_keys <- function(table, schema, name.columns="name"){	
+incorporate_foreign_keys <- function(table, schema, name.columns="name", ...){	
 	if (is.character(schema)){
 		schema <- fromJSON(schema)
 	}
@@ -36,8 +37,9 @@ incorporate_foreign_keys <- function(table, schema, name.columns="name"){
 		if (is.null(x)){
 			return(NULL)
 		}
+		
 		dataPkg <- read_data_package(x$pkg)		
-		file <- get_resource(dataPkg, x$file)
+		file <- get_resource(dataPkg, x$file, ...)
 		
 		
 		#assume that it's just a length one character.

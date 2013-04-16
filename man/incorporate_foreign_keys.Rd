@@ -3,7 +3,7 @@
 \title{Factorize foreign keys}
 \usage{
   incorporate_foreign_keys(table, schema,
-    name.columns = "name")
+    name.columns = "name", ...)
 }
 \arguments{
   \item{table}{The JSON Table as read in from
@@ -16,6 +16,9 @@
   levels of the factor. If the referenced table has two of
   fewer columns, this value will be ignored. See Details
   for more information.}
+
+  \item{...}{Parameters passed on to
+  \code{\link{get_resource}}}
 }
 \description{
   Identify the columns in the table which have been labeled

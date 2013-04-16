@@ -233,7 +233,7 @@ read_json_table <- function(content,
 	}
 	
 	if (factorize.foreign.keys){				
-		table <- incorporate_foreign_keys(table, schema, ...)
+		table <- incorporate_foreign_keys(table, schema, getter=getter, ...)
 	}
 	table
 }
