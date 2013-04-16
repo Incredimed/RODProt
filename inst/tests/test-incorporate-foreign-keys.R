@@ -25,7 +25,7 @@ test_that("Single column factorizes properly",{
 	table <- get_resource(pkg, "data3")
 	
 	#Will warn that duplicated levels are going away
-	expect_warning({
+	suppressWarnings({
 		expected <- data.frame(A=factor(4:6, 
 																		levels=1:6, 
 																		labels=c(rep(NA_character_, 3),
@@ -46,7 +46,7 @@ test_that("Three column factorizes properly",{
 	table <- get_resource(pkg, "data3", name.column="C", cache=FALSE)
 	
 	#Will warn that duplicated levels are going away
-	expect_warning({
+	suppressWarnings({
 		expected <- data.frame(A=factor(4:6, 
 																		levels=1:6, 
 																		labels=c(rep(NA_character_, 3),
@@ -67,7 +67,7 @@ test_that("Three column factorizes on another column properly",{
 	table <- get_resource(pkg, "data3", name.column="B", cache=FALSE)
 	
 	#Will warn that duplicated levels are going away
-	expect_warning({
+	suppressWarnings({
 		expected <- data.frame(A=factor(4:6, 
 																		levels=1:6, 
 																		labels=c(rep(NA_character_, 3),
@@ -87,7 +87,7 @@ test_that("Missing multi-col factors convert to NA",{
 	table <- get_resource(pkg, "data3", name.column="B")
 	
 	#Will warn that duplicated levels are going away
-	expect_warning({
+	suppressWarnings({
 		expected <- data.frame(A=factor(4:6, 
 																		levels=1:9, 
 																		labels=c(rep(NA_character_, 6),

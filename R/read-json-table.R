@@ -172,11 +172,11 @@ read_json_table <- function(content,
 	}
 	
 	table <- as.data.frame(table, stringsAsFactors=FALSE)
-	
+		
 	#separate data into named and mixed-array type rows
 	namedInd <- sapply(data, class) == "list" & !sapply(data, function(x){is.null(names(x))})
-	mixed <- data[!namedInd]
-	named <- data[namedInd]
+	mixed <- as.list(data[!namedInd])
+	named <- as.list(data[namedInd])
 	
 	replaceInList <- function (x, FUN, ...) 
 	{ 
@@ -188,6 +188,10 @@ read_json_table <- function(content,
 		} 
 		else FUN(x, ...) 
 	} 
+	
+	#Handle NULLs
+	mixed <- replaceInList(mixed, function(x){if(is.null(x)){NA}else{x}})
+	named <- replaceInList(named, function(x){if(is.null(x)){NA}else{x}})
 	
 	#process mixed-aray columns which have no names
 	mixLen <- length(mixed)	

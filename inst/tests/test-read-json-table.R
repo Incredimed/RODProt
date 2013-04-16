@@ -499,3 +499,48 @@ test_that("separate remote URL works", {
                          stringsAsFactors=FALSE)
   expect_identical(tab, expected)
 })
+
+
+test_that("NULLs in JSON works", {
+	json <- '{"fields":[
+{
+	"id":"A",
+	"label":"Column A",
+	"type":"integer"		
+},{
+	"id":"B",
+	"label":"Column B",
+	"type":"string"		
+}],
+	"data":[
+{"A":null, "B":"test"},
+{"B":null, "A":5},
+	[null, "final"]
+	]}'
+	
+	tab <- read_json_table(json)	
+	expected <- data.frame(A=c(NA_integer_, 5L, NA_integer_), 
+												 B=c("test", NA_character_, "final"), 
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)
+	
+	})
+
+test_that("single column works", {
+	json <- '{"fields":[
+		{
+	"id":"A",
+	"label":"Column A",
+	"type":"integer"		
+}],
+	"data":[
+	[4],
+	[5],
+	[6]
+	]}'
+	
+	tab <- read_json_table(json)	
+	expected <- data.frame(A=4:6, 												  
+												 stringsAsFactors=FALSE)
+	expect_identical(tab, expected)
+	})
