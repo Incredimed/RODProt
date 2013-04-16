@@ -10,7 +10,7 @@
     "id": "odc-pddl",
     "url": "http://opendatacommons.org/licenses/pddl/"
   }],
-  "files": [
+  "resources": [
      {
       "path": "data.json",
       "id": "data",
