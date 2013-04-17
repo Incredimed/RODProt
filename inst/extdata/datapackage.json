@@ -57,7 +57,7 @@
              "type":"integer",
 	     "foreignkey": {
                 "pkg": "../extdata/datapackage.json",
-                "file": "data",
+                "resource": "data",
                 "id": "A"
              }
           },{

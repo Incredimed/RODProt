@@ -19,8 +19,8 @@ test_that("Read foreign key properly",{
 test_that("Single column factorizes properly",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-single"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-single"
 		
 	table <- get_resource(pkg, "data3")
 	
@@ -40,8 +40,8 @@ test_that("Single column factorizes properly",{
 test_that("Three column factorizes properly",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol2"
 	
 	table <- get_resource(pkg, "data3", name.column="C", cache=FALSE)
 	
@@ -61,8 +61,8 @@ test_that("Three column factorizes properly",{
 test_that("Three column factorizes on another column properly",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol2"
 	
 	table <- get_resource(pkg, "data3", name.column="B", cache=FALSE)
 	
@@ -81,8 +81,8 @@ test_that("Three column factorizes on another column properly",{
 test_that("Missing multi-col factors convert to NA",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol"
 	
 	table <- get_resource(pkg, "data3", name.column="B")
 	
@@ -101,8 +101,8 @@ test_that("Missing multi-col factors convert to NA",{
 test_that("Misnamed column errors",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol"
 	
 	expect_error(get_resource(pkg, "data3", cache=FALSE, name.columns="name"), "name.column value")		
 })
@@ -110,8 +110,8 @@ test_that("Misnamed column errors",{
 test_that("Misnamed column as list errors",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol"
 	
 	suppressWarnings({
 		expect_error(get_resource(pkg, "data3", cache=FALSE, name.columns=list(fileA="name")), "name.column value")		
@@ -119,11 +119,11 @@ test_that("Misnamed column as list errors",{
 })
 
 
-test_that("Missing file name from column.name list warns but works",{
+test_that("Missing resource name from column.name list warns but works",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol2"
 	
 	expect_warning(table <- get_resource(pkg, "data3", name.column=list(fileA="B"), cache=FALSE))
 	
@@ -142,8 +142,8 @@ test_that("Missing file name from column.name list warns but works",{
 test_that("Three column factorizes on another column properly",{
 	pkg <- read_data_package("../extdata/datapackage.json")
 	
-	#modify schema to point foreign key to single data file
-	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+	#modify schema to point foreign key to single data resource
+	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol2"
 	
 	table <- get_resource(pkg, "data3", name.column="B", cache=FALSE)
 	
@@ -163,8 +163,8 @@ test_that("Three column factorizes on another column properly",{
 # test_that("Cache properly considers name.column parameter",{
 # 	pkg <- read_data_package("../extdata/datapackage.json")
 # 	
-# 	#modify schema to point foreign key to single data file
-# 	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$file <- "data-threecol2"
+# 	#modify schema to point foreign key to single data resource
+# 	pkg$resources[[3]]$schema$fields[[1]]$foreignkey$resource <- "data-threecol2"
 # 	
 # 	table <- get_resource(pkg, "data3", name.column="C", cache=TRUE)
 # 	
