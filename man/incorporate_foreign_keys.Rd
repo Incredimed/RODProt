@@ -36,7 +36,7 @@
   character vectors.
 
   The behavior is as follows: if there is only one column
-  in the referenced file and that column matches the
+  in the referenced resource and that column matches the
   \code{ID} given for the foreignkey, that column will be
   used as both the IDs and the levels of the factor --
   meaning that any values defined in this external table

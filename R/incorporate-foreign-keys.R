@@ -14,7 +14,7 @@
 #' levels to be associated with these values. In the current implementation, these levels will be
 #' converted to character vectors.
 #' 
-#' The behavior is as follows: if there is only one column in the referenced file and that column
+#' The behavior is as follows: if there is only one column in the referenced resource and that column
 #' matches the \code{ID} given for the foreignkey, that column will be used as both the IDs and 
 #' the levels of the factor -- meaning that any values defined in this external table will map
 #' to themselves, and any other values not in the table will map to \code{NA}. If the table has two
@@ -39,7 +39,7 @@ incorporate_foreign_keys <- function(table, schema, name.columns="name", ...){
 		}
 		
 		dataPkg <- read_data_package(x$pkg)		
-		file <- get_resource(dataPkg, x$file, ...)
+		resource <- get_resource(dataPkg, x$resource, ...)
 		
 		
 		#assume that it's just a length one character.
@@ -47,50 +47,50 @@ incorporate_foreign_keys <- function(table, schema, name.columns="name", ...){
 		
 		#check to see if that assumption is invalid
 		if (length(name.columns) > 1 || is.list(name.columns)){
-			if (x$file %in% names(name.columns)){			
-				#this file has an explicitly specified column name to use
-				col.name <- name.columns[[x$file]]
+			if (x$resource %in% names(name.columns)){			
+				#this resource has an explicitly specified column name to use
+				col.name <- name.columns[[x$resource]]
 				
 			} else{
 				#column names were specified, but not this one. Default to the first with a warning.
-				warning(paste("the name.columns parameter was set for some files, but no column name was set for the file with ID: '",
-											x$file, "'. Defaulting to the first column name specified.", sep=""))
+				warning(paste("the name.columns parameter was set for some resources, but no column name was set for the resource with ID: '",
+											x$resource, "'. Defaulting to the first column name specified.", sep=""))
 				col.name <- name.columns[[1]]
 				
 			}				
 		}
 				
-		if (!x$id %in% colnames(file)){
-			stop("The ID specified in the foreignkey was not found in the file.")
+		if (!x$id %in% colnames(resource)){
+			stop("The ID specified in the foreignkey was not found in the resource.")
 		}
 		
 		#FIXME: duplicated levels in factors (even NAs) will throw an error eventually.
 		
-		if (ncol(file) == 1){
+		if (ncol(resource) == 1){
 			#Only one column, map all values to themselves and any other values to NA.
 			fac <- factor()
-			levs <- rep(NA_character_, length=max(file[,1]))
-			levs[as.integer(file[,1])] <- as.character(file[,1])			
+			levs <- rep(NA_character_, length=max(resource[,1]))
+			levs[as.integer(resource[,1])] <- as.character(resource[,1])			
 			attr(fac, "levels") <- levs
 			
 			return(fac)
 		}
-		if(ncol(file) == 2){
+		if(ncol(resource) == 2){
 			# Two columns, use the ID as the index and the other column as the levels.
 			fac <- factor()
-			levs <- rep(NA_character_, length=max(file[[x$id]]))
-			levs[as.integer(file[[x$id]])] <- file[[which(colnames(file) != x$id)]]
+			levs <- rep(NA_character_, length=max(resource[[x$id]]))
+			levs[as.integer(resource[[x$id]])] <- resource[[which(colnames(resource) != x$id)]]
 			attr(fac, "levels") <- levs
 			
 			return(fac)
 		}
-		if (ncol(file) > 2){			
-			if (! col.name %in% colnames(file)){
-				stop("The name.column value was not found in the file. See the documentation and Details section for how to correct this.")
+		if (ncol(resource) > 2){			
+			if (! col.name %in% colnames(resource)){
+				stop("The name.column value was not found in the resource. See the documentation and Details section for how to correct this.")
 			}
 			fac <- factor()			
-			levs <- rep(NA_character_, length=max(file[[x$id]]))
-			levs[as.integer(file[[x$id]])] <- file[[col.name]]
+			levs <- rep(NA_character_, length=max(resource[[x$id]]))
+			levs[as.integer(resource[[x$id]])] <- resource[[col.name]]
 			attr(fac, "levels") <- levs			
 			
 			return(fac)
