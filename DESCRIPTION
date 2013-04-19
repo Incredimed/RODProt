@@ -12,7 +12,6 @@ Imports:
     rjson (>= 0.2.10),
     httr (>= 0.2),
     digest (>= 0.5.2),
-    methods,
     RCurl
 License: MIT
 Collate:
