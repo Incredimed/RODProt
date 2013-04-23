@@ -6,7 +6,7 @@
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 cast_type <- function(type){	
-	as.character(sapply(c(type), cast_single))	
+	lapply(c(type), cast_single)	
 }
 
 cast_single <- function(type){	

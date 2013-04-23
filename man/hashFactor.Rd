@@ -18,6 +18,11 @@
   same way as a factor, but doesn't require a continuous
   sequence of integers for the levels.
 }
+\examples{
+fac <- hashFactor(sample(LETTERS[1:5], 10, replace=TRUE),
+	levels=LETTERS[1:5], codes=c(1,5,8,2,6))
+d <- data.frame(i=11:20, f=fac)
+}
 \author{
   Jeffrey D. Allen \email{Jeffrey.Allen@UTSouthwestern.edu}
 }

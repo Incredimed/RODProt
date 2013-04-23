@@ -132,7 +132,7 @@ read_json_table <- function(content,
 				
 			if (!is.null(thisSchema$type)){
 				thisType <- cast_type(thisSchema$type)				
-				if (is.null(thisType)){
+				if (is.null(unlist(thisType))){
 					if (!overlook.types){
 						#non-defined class, stop
 						stop(paste("The class specified ('", thisSchema$type, "') is not supported. Set ",
@@ -142,7 +142,7 @@ read_json_table <- function(content,
 					}
 					
 				} else{
-					type[i] <- thisType
+					type[i] <- unlist(thisType)
 				}
 			} else{
 				type[i] <- "character"
@@ -230,7 +230,7 @@ read_json_table <- function(content,
 	classFields <- list()
 	classFields[sapply(schema, "[[", "id")] <- cast_type(sapply(schema, "[[", "type"))
 	
-	myClass <- setRefClass("Tissue", fields=classFields, where=.classEnv)
+	#myClass <- setRefClass("Tissue", fields=classFields, where=.classEnv)
 		
 	if (factorize.foreign.keys){				
 		table <- incorporate_foreign_keys(table, schema, getter=getter, ...)
