@@ -28,3 +28,5 @@ Collate:
     'getter-raw.R'
     'getter-hmac.R'
     'get-resource.R'
+    'cast-type.R'
+    'hashFactor.R'
