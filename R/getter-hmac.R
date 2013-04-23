@@ -5,6 +5,7 @@
 #' @importFrom httr GET
 #' @importFrom digest hmac
 #' @importFrom RCurl base64Encode
+#' @importFrom httr parse_url
 #' @export
 #' @exportClass HMACGetter
 #' @aliases HMACGetter-class

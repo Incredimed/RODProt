@@ -131,12 +131,7 @@ read_json_table <- function(content,
 			thisSchema <- schema[[i]]
 				
 			if (!is.null(thisSchema$type)){
-				thisType <- switch(thisSchema$type,
-	 							 				   "integer" = "integer",
-												   "number" = "numeric",
-												   "string" = "character",
-													 "boolean" = "logical"
-				)			
+				thisType <- cast_type(thisSchema$type)				
 				if (is.null(thisType)){
 					if (!overlook.types){
 						#non-defined class, stop
@@ -232,6 +227,11 @@ read_json_table <- function(content,
 		table[namedInd,] <- mat
 	}
 	
+	classFields <- list()
+	classFields[sapply(schema, "[[", "id")] <- cast_type(sapply(schema, "[[", "type"))
+	
+	myClass <- setRefClass("Tissue", fields=classFields, where=.classEnv)
+		
 	if (factorize.foreign.keys){				
 		table <- incorporate_foreign_keys(table, schema, getter=getter, ...)
 	}
