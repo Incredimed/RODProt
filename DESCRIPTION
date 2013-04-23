@@ -12,7 +12,8 @@ Imports:
     rjson (>= 0.2.10),
     httr (>= 0.2),
     digest (>= 0.5.2),
-    RCurl
+    RCurl,
+    methods
 License: MIT
 Collate:
     'read-json-table.R'

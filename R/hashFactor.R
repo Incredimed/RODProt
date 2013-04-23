@@ -22,7 +22,11 @@ hashFactor <- function(x=character(), levels, codes){
 }
 
 #' Access hashFactor
+#' 
+#' Allow access to a hashFactor
 #' @param x The index specifying which element to extract
+#' @param ... ignored
+#' @method [ hashFactor
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 `[.hashFactor` <- function(x, ...) {
@@ -32,7 +36,11 @@ hashFactor <- function(x=character(), levels, codes){
 }
 
 #' Convert a hashFactor to integer
+#' 
+#' Convert a hashFactor to integer
 #' @param x hashFactor to be coerced to integer
+#' @method as.integer hashFactor
+#' @param ... ignored
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 as.integer.hashFactor <- function(x, ...) {

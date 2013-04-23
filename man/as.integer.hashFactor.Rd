@@ -2,10 +2,12 @@
 \alias{as.integer.hashFactor}
 \title{Convert a hashFactor to integer}
 \usage{
-  as.integer.hashFactor(x, ...)
+  \method{as.integer}{hashFactor} (x, ...)
 }
 \arguments{
   \item{x}{hashFactor to be coerced to integer}
+
+  \item{...}{ignored}
 }
 \description{
   Convert a hashFactor to integer
