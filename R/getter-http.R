@@ -12,7 +12,16 @@ HTTPGetter <- setRefClass("HTTPGetter",
 	 		initFields(...)
 	 	},
 	 	get = function(uri){
-			 content(GET(uri), as="text")
+			 
+	 		if (nchar(uri) > 1000){
+	 			warning(paste("Some server+client combinations don't support URLs over ",
+	 										"1,000 characters. The request you made contains ", 
+	 										nchar(uri), " characters. If this request fails, try ",
+	 										"breaking this request into multiple smaller requests.",
+	 										sep =""))
+	 		}
+	 		
+	 		content(GET(uri), as="text")
 	 	}
 	)
 )

@@ -61,6 +61,14 @@ HMACGetter <- setRefClass("HMACGetter",
 	 											"?",query,sep="")
 	 		}
 	 		
+	 		if (nchar(reqURL) > 1000){
+	 			warning(paste("Some server+client combinations don't support URLs over ",
+	 										"1,000 characters. The request you made contains ", 
+	 										nchar(reqURL), " characters. If this request fails, try ",
+	 										"breaking this request into multiple smaller requests.",
+	 										sep =""))
+	 		}
+	 		
 	 		req <- GET(reqURL, add_headers(Date=msTimestamp,
 	 		 															 ClientId=id,
 	 																	 Signature=base64Encode(hmac)))	 		
