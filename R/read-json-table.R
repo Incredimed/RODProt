@@ -48,6 +48,13 @@ read_json_table <- function(content,
 			if (file.exists(content)){
 				getter <- LocalGetter$new()			
 			} else if (tolower(substr(content,0, 4)) == "http"){
+				if (nchar(content) > 1000){
+					warning(paste("Some server+client combinations don't support URLs over ",
+												"1,000 characters. The request you made contains ", 
+												nchar(content), " characters. If this request fails, try ",
+												"breaking this request into multiple smaller requests.",
+												sep =""))
+				}
 				getter <- HTTPGetter$new()			
 			} else{
 				#must be raw JSON

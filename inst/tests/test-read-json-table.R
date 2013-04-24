@@ -501,6 +501,10 @@ test_that("separate remote URL works", {
 })
 
 
+test_that("warn on large URL", {
+	expect_warning(read_json_table(paste("http://raw.github.com/QBRC/RODProt/63cd96f91ccdae6e8358393211ea3d88870c8eb0/data/mixed.json?id=", paste(100:999, collapse=","), sep="")), "1,000")	
+})
+
 test_that("NULLs in JSON works", {
 	json <- '{"fields":[
 {
