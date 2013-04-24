@@ -14,37 +14,38 @@
 #' @importFrom rjson fromJSON
 #' @importFrom httr GET
 #' @importFrom httr content
+#' @importFrom httr parse_url
 #' @importFrom digest digest
 #' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
 #' @export
 read_data_package <- function(content, base, getter){
-	raw <- FALSE
+	url <- NULL
 	if (missing(getter)){
 		if (file.exists(content)){
-			getter <- LocalGetter$new()			
+			getter <- LocalGetter$new()		
+			base <- dirname(content)	
 		} else if (tolower(substr(content,0, 4)) == "http"){
-			getter <- HTTPGetter$new()			
+			getter <- HTTPGetter$new()	
+			base <- dirname(content)	
+			
+			url <- parse_url(base)
+			
 		} else{
 	  	#must be raw JSON
 	  	getter <- RawGetter$new()
-	  	raw <- TRUE
+	  	
+	  	if (missing(base)){
+	  		warning("You didn't specify a base directory and provided the package content directly, so we won't know how to find any files referenced within this Data Package. Consider setting the 'base' variable or providing a file/URL reference instead of the JSON itself.")
+	  		base <- NULL
+	  	}
 	  }
 	} 
 	
   json <- fromJSON(getter$get(content))
 	
-	#if (getter$className == "RawGetter"){ TODO: Figure out how to compare classes
-	if (raw){
-		if (missing(base)){
-			warning("You didn't specify a base directory and provided the package content directly, so we won't know how to find any files referenced within this Data Package. Consider setting the 'base' variable or providing a file/URL reference instead of the JSON itself.")
-			base <- NULL
-		} else{
-			base <- base
-		}		
-	} else{
-		base <- dirname(content)		
+	if (!is.null(url)){
+		json$url <- url
 	}
-	
 	json$base <- base
   class(json) <- c("dataPackage", class(json))
 	

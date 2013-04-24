@@ -6,6 +6,7 @@
 #' @importFrom digest hmac
 #' @importFrom RCurl base64Encode
 #' @importFrom httr parse_url
+#' @importFrom httr add_headers
 #' @export
 #' @exportClass HMACGetter
 #' @aliases HMACGetter-class

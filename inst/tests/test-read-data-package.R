@@ -19,5 +19,5 @@ test_that("remote data package works", {
 	expect_equal(length(pkg$licenses), 1)
 	expect_equal(length(pkg$resources), 6)
 	expect_equal(pkg$base, "http://raw.github.com/QBRC/RODProt/758feb1d65527d2125758f0682aae69d9e3f4707/inst/extdata")
-	expect_equal(pkg$hash, "f47f8801d0369b28d004faa1741d02ca38be947da5ff18d4afad4c67d9665e29")
+	expect_equal(pkg$hash, "bf0b2e60078aac8936e8f5d9945aebeab9601042acd375d9703ef3dcc65358d8")
 })
