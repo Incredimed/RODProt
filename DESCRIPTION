@@ -31,3 +31,4 @@ Collate:
     'get-resource.R'
     'cast-type.R'
     'hashFactor.R'
+    'read-schemaed-csv.R'

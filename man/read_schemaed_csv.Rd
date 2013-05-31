@@ -1,0 +1,51 @@
+\name{read_schemaed_csv}
+\alias{read_schemaed_csv}
+\title{A function to read in a CSV schemaed using JSON Table Schema}
+\usage{
+  read_schemaed_csv(content, schema,
+    overlook.types = FALSE, factorize.foreign.keys = TRUE,
+    getter, ...)
+}
+\arguments{
+  \item{content}{The content to convert. This can either be
+  a String of CSV, a local filename, or a URL.}
+
+  \item{schema}{Optionally, you can provide a separate
+  schema for the message contained in the \code{content}
+  parameter. This can be either the JSON itself, a local
+  file reference, or a URL.}
+
+  \item{overlook.types}{If TRUE, any unrecognized or
+  non-supported type will just be treated as a character
+  vector. Otherwise, the function will terminate upon
+  encountering a non-supported type. The currently
+  supported types are: (\code{boolean}, \code{string},
+  \code{integer}, and \code{number}).}
+
+  \item{factorize.foreign.keys}{When \code{TRUE} (default),
+  any column leveraging the (non-standardized, at the time
+  of writing -- see
+  \url{https://github.com/dataprotocols/dataprotocols/issues/23})
+  foreign-key functionality of JSON Table Schemas will be
+  handled as a fator, mapping the underlying key to the
+  presented form. Currently, this only works with foreign
+  keys that map integers to strings.}
+
+  \item{getter}{The \link{Getter} to use when retrieving
+  the specified data. By default, the getter will be
+  inferred based on the structure of the \code{content}
+  parameter. Alternatively, you can explicitly set one
+  here, or even provide a custom getter.}
+
+  \item{...}{Additional arugments to be passed to
+  \code{incorporate-foreign-keys} (unexported, but publicly
+  documented in this package).}
+}
+\description{
+  A function to read in a CSV schemaed using JSON Table
+  Schema
+}
+\author{
+  Jeffrey D. Allen \email{Jeffrey.Allen@UTSouthwestern.edu}
+}
+

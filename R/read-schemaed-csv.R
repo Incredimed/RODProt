@@ -1,0 +1,162 @@
+#' A function to read in a CSV schemaed using JSON Table Schema
+#' 
+#' @param content The content to convert. This can either be a String of CSV,
+#' a local filename, or a URL.
+#' @param schema Optionally, you can provide a separate schema for the 
+#' message contained in the \code{content} parameter. This can be either the JSON
+#' itself, a local file reference, or a URL.
+#' @param overlook.types If TRUE, any unrecognized or non-supported type will 
+#' just be treated as a character vector. Otherwise, the function will terminate
+#' upon encountering a non-supported type. The currently supported types are: 
+#' (\code{boolean}, \code{string}, \code{integer}, and \code{number}).
+#' @param factorize.foreign.keys When \code{TRUE} (default), any column leveraging
+#' the (non-standardized, at the time of writing -- see 
+#' \url{https://github.com/dataprotocols/dataprotocols/issues/23}) foreign-key 
+#' functionality of JSON Table Schemas will be handled as a fator, mapping the
+#' underlying key to the presented form. Currently, this only works with foreign
+#' keys that map integers to strings.
+#' @param getter The \link{Getter} to use when retrieving the specified data. By
+#' default, the getter will be inferred based on the structure of the 
+#' \code{content} parameter. Alternatively, you can explicitly set one here, or 
+#' even provide a custom getter.
+#' @param ... Additional arugments to be passed to \code{incorporate-foreign-keys}
+#' (unexported, but publicly documented in this package).
+#' @importFrom httr GET
+#' @importFrom httr content
+#' @author Jeffrey D. Allen \email{Jeffrey.Allen@@UTSouthwestern.edu}
+#' @export
+read_schemaed_csv <- function(content, 
+							  						 schema, 
+														 overlook.types=FALSE, 
+														 factorize.foreign.keys=TRUE,
+														 getter,
+														 ...){	
+	if (missing(content)){
+		content <- list()
+	}
+	
+	
+	if (missing(getter)){
+		if (file.exists(content)){
+			dataGetter <- LocalGetter$new()			
+		} else if (tolower(substr(content,0, 4)) == "http"){				
+			dataGetter <- HTTPGetter$new()			
+		} else{
+			#must be raw CSV
+			dataGetter <- RawGetter$new()
+		}
+    
+    #read.csv doesn't handle raw strings, but requires a text connection.
+    conn <- textConnection(dataGetter$get(content))
+		json <- read.csv(conn, header=FALSE, row.names=NULL)
+    close(conn)
+	}
+	
+	if (missing(schema)){
+		stop("No schema provided.")
+	} else{		
+		if (class(schema) == "list"){
+			#already parsed
+		} else{
+      if (missing(getter)){
+				if (file.exists(schema)){
+					getter <- LocalGetter$new()			
+				} else if (tolower(substr(schema,0, 4)) == "http"){
+					getter <- HTTPGetter$new()			
+				} else{
+					#must be raw JSON
+					getter <- RawGetter$new()					
+				}
+			} 
+			schema <- fromJSON(getter$get(schema))
+		} 
+		
+		#allow (encourage) schema to nest fields element in its JSON
+		if (!is.null(schema$fields)){
+			schema <- schema$fields
+		}
+		
+		data <- json		
+	}
+	
+	#stop if named elements in schema. Sign of malformed JSON.
+	if (!is.null(names(schema))){
+		stop("JSON Table Schema should not have named elements in its fields.")		
+	}
+	
+	#to ultimately be converted into the data.frame to return
+	table <- list()
+	
+	if (!is.null(schema)){
+		#map of IDs to column indices
+		idMap <- numeric(length=length(schema))	
+	} else{
+		#calculate IDs dynamically.
+		nullNames <- unlist(lapply(data, function(x){is.null(names(x))}))
+		if (sum(nullNames) > 0 && !all(nullNames)){
+			stop("You can't mix the mixed-array format with the named list format in a schema-less JSON table. We don't know which column is which!")
+		}
+		if (!all(nullNames)){
+			idMap <- unique(unlist(lapply(data, names)))
+		} else{
+			idMap <- paste("C", 1:length(data[[1]]), sep="")
+		}
+	}
+	
+	type <- character(length=length(idMap))
+	
+	#setup data.frame
+	for (i in 1:length(idMap)){
+		if(!is.null(schema)){
+			#if we have a schema, parse it.
+			thisSchema <- schema[[i]]
+				
+			if (!is.null(thisSchema$type)){
+				thisType <- cast_type(thisSchema$type)				
+				if (is.null(unlist(thisType))){
+					if (!overlook.types){
+						#non-defined class, stop
+						stop(paste("The class specified ('", thisSchema$type, "') is not supported. Set ",
+											 "'overlook.types' to TRUE to ignore this error.", sep=""))
+					} else{
+						type[i] <- "character"
+					}
+					
+				} else{
+					type[i] <- unlist(thisType)
+				}
+			} else{
+				type[i] <- "character"
+			}		
+		}
+		else{
+			#no schema was provided, need to build ourselves from the idMap
+			thisSchema <- list(id=idMap[i])
+			type[i] <- "character"
+		}
+		
+		col <- get(type[i])(length=nrow(data))
+		
+		thisCol <- list()
+		#TODO: do something with column labels. Perhaps extend the data.frame class (preface 
+		# our objects with some new class name which prints using labels, but actually indexes
+		# using IDs.
+		thisCol[[thisSchema$id]] <- col
+		
+    
+		table <- c(table, thisCol)
+		idMap[i] <- thisSchema$id
+	}
+  
+	table <- as.data.frame(table, stringsAsFactors=FALSE)
+	
+	for (i in 1:ncol(table)){			
+		table[,i] <- get(paste("as",type[i],sep="."))(data[,i])
+	}	
+
+	if (factorize.foreign.keys){				
+		table <- incorporate_foreign_keys(table, schema, getter=getter, ...)
+	}
+	table
+}
+

@@ -2,6 +2,9 @@
 \alias{LocalGetter}
 \alias{LocalGetter-class}
 \title{Local file getter}
+\usage{
+  LocalGetter(...)
+}
 \description{
   Getter which accesses local files
 }
