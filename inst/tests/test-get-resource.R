@@ -23,6 +23,14 @@ test_that("get remote file works", {
 	
 })
 
+test_that("get remote CSV file works", {
+  
+  pkg <- read_data_package("http://raw.github.com/datasets/house-prices-us/0b5042bbe9a2c2537a3bd708287321396b534710/datapackage.json")
+  file <- get_resource(pkg, "national", cache=FALSE, overlook.types=TRUE)
+  expect_equal(2, ncol(file))
+  expect_equal(27, nrow(file))
+})
+
 test_that("mixed URLs and paths works", {
 	
 	pkg <- read_data_package("../extdata/datapackage.json")

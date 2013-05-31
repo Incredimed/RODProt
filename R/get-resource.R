@@ -105,8 +105,11 @@ get_resource <- function(dataPkg, resource, cache=TRUE, ...){
 		}
 	}
 	
-	#TODO: handle other types like CSV.
-	
+  fileSuffix <- substr(thisResource$path, nchar(thisResource$path)-3, nchar(thisResource$path))
+  if (length(fileSuffix) == 0){
+    fileSuffix <- ""
+  }
+  
 	if (!is.null(thisResource$url)){
 		if (substr(thisResource$url, 0, 4) == "http"){
 			url <- thisResource$url
@@ -114,11 +117,22 @@ get_resource <- function(dataPkg, resource, cache=TRUE, ...){
 			url <- paste(dataPkg$base, thisResource$url, sep="/")
 		}
 		
-		toReturn <- read_json_table(url, thisResource$schema, ...)
+		if (fileSuffix == ".csv"){
+		  toReturn <- read_schemaed_csv(url, thisResource$schema, ...)
+		} else{
+		  toReturn <- read_json_table(url, thisResource$schema, ...)
+		}
 	} else if (!is.null(thisResource$path)){
-		toReturn <- read_json_table(paste(dataPkg$base, thisResource$path, sep="/"), 
-																thisResource$schema, 																
-																...)
+	  if (fileSuffix == ".csv"){
+	    toReturn <- read_schemaed_csv(paste(dataPkg$base, thisResource$path, sep="/"), 
+	                                thisResource$schema, 																
+	                                ...)
+	  } else{
+	    toReturn <- read_json_table(paste(dataPkg$base, thisResource$path, sep="/"), 
+	                                thisResource$schema, 																
+	                                ...)
+	  }
+    
 	} else{
 		stop("Resource found, but no path or url field specified")
 	}	
