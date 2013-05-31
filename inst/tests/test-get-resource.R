@@ -29,6 +29,7 @@ test_that("get remote CSV file works", {
   file <- get_resource(pkg, "national", cache=FALSE, overlook.types=TRUE)
   expect_equal(2, ncol(file))
   expect_equal(27, nrow(file))
+  expect_equal(c("character", "double"), as.character(sapply(file, typeof)))
 })
 
 test_that("mixed URLs and paths works", {
