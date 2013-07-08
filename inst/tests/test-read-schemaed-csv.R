@@ -3,7 +3,8 @@ context("read_json_table")
 test_that("local file works", {
 	fl <- tempfile()
 		
-	csv <- '4,"test"
+	csv <- '"A","B"
+4,"test"
 5,"another"
 6,"final"'
 	
@@ -39,7 +40,8 @@ test_that("label-less JSON works", {
 			"type":"string"		
 		}]}'
 	
-	csv <- '4,"test"
+	csv <- '"A","B"
+4,"test"
 5,"another"
 6,"final"'
 	
@@ -61,7 +63,8 @@ test_that("invalid schema fails", {
 			"type":"string"		
 		}]}'
   
-  csv <- '4,"test"
+  csv <- '"A","B"
+4,"test"
 5,"another"
 6,"final"'
 	

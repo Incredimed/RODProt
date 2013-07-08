@@ -50,7 +50,7 @@ get_resource <- function(dataPkg, resource, cache=TRUE, ...){
 		
 		#both a path and a URL specified somewhere
 		if (any(!sapply(paths, is.null) & !sapply(urls, is.null))){
-			stop("Cannot specify both a path and a URL for a single resource.")
+			warning("Both a relative path and a global URL were specified for a resource. Giving preference to the URL.")
 		}
 		
 		merged <- paths

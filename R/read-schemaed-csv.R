@@ -48,7 +48,7 @@ read_schemaed_csv <- function(content,
     
     #read.csv doesn't handle raw strings, but requires a text connection.
     conn <- textConnection(dataGetter$get(content))
-		json <- read.csv(conn, header=FALSE, row.names=NULL)
+		json <- read.csv(conn, header=TRUE, row.names=NULL)
     close(conn)
 	}
 	
@@ -149,9 +149,9 @@ read_schemaed_csv <- function(content,
 	}
   
 	table <- as.data.frame(table, stringsAsFactors=FALSE)
-	
-	for (i in 1:ncol(table)){			
-		table[,i] <- get(paste("as",type[i],sep="."))(data[,i])
+	  
+	for (i in 1:ncol(table)){
+    table[,i] <- get(paste("as",type[i],sep="."))(data[,i])
 	}	
 
 	if (factorize.foreign.keys){				
