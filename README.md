@@ -55,3 +55,22 @@ Or to get some more traditional CSV data as it might exist in the Simple Data Fo
 	27 2012            5
     
 Note that the `overlook.types` parameter must be set to `TRUE` if you're attempting to load a file that has an unsupported data type (such as `date`). Support for more data types is in the works, though patches are welcome!
+
+Similarly, we can download data from http://data.okfn.org
+
+	> library(RODProt)
+	> pkg <- read_data_package("http://data.okfn.org/data/cpi/datapackage.json")
+	> cpi <- get_resource(pkg, "cpi.csv", overlook.types=TRUE)
+	Warning message:
+	In get_resource(pkg, "cpi.csv", overlook.types = TRUE) :
+	  Both a relative path and a global URL were specified for a resource. Giving preference to the URL.
+	> head(cpi)
+	  Country.Name Country.Code Year       CPI
+	1  Afghanistan          AFG 2004  89.16959
+	2  Afghanistan          AFG 2005 100.00000
+	3  Afghanistan          AFG 2006 103.48966
+	4  Afghanistan          AFG 2007 121.03186
+	5  Afghanistan          AFG 2008 148.51621
+	6  Afghanistan          AFG 2009 128.87374
+	
+Again, the `overlook.types` directive will be necessary until types such as dates are supported.
