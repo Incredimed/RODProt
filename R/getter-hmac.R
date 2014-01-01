@@ -42,7 +42,8 @@ HMACGetter <- setRefClass("HMACGetter",
 			obj <- paste(
 				"GET\n",
 				host,"\n",
-				paste(paste(protocol, "://", host, sep=""),path,sep=""),"\n",
+				#paste(paste(protocol, "://", host, sep=""),path,sep=""),"\n",
+				path,"\n",
 				msTimestamp,"\n",
 				query, sep="")
 				 		
