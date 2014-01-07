@@ -1,0 +1,6 @@
+RODProt 0.2.0
+
+Fixed Issues:
+
+We've been attempting to follow the specifications at http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/HMACAuth.html for HMAC generation, but our request URI included the http://<hostname>.  We should not include the http:// or the hostname, but instead we should start with the first "/" after the hostname.  I have updated RODProt to correctly sign the request per the Amazon specification
+
